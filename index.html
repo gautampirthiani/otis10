@@ -1,67 +1,2623 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Elevator Maintenance Information</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.core.min.js"></script>
-  </head>
-  <body>
-    <table id="maintenance-table">
-      <thead>
-        <tr>
-          <th>Elevator ID</th>
-          <th>Maintenance Type</th>
-          <th>Maintenance Date</th>
-        </tr>
-      </thead>
-      <tbody id="maintenance-body"></tbody>
-    </table>
-    <input type="file" id="file-input" accept=".xlsx">
-    <script>
-      // Read the data from the Excel file
-      const readExcelData = () => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            const data = event.target.result;
-            const workbook = XLSX.read(data, { type: "binary" });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            resolve(XLSX.utils.sheet_to_json(worksheet, { header: 1 }));
-          };
-          reader.readAsBinaryString(document.getElementById("file-input").files[0]);
-        });
-      };
+<html lang="en-US" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="utf-8" />
+    <title>OTIS Developer Portal - At a glance</title>
+    
+<script type="text/javascript">
+    var apiphany = {
+        globals: {
+            amChartsImageUrl: '/Themes/Portals.Themes.Bootstrap/Styles/AmCharts/',
+            amMapsImageUrl: '/Themes/Portals.Themes.Bootstrap/Styles/AmMaps/',
+            activityId: '26d0dde8-cc58-49c4-b6a5-309d0ac5a51d',
+            appPath: '/',
+            antiForgeryToken: 'n1VAMksduE0-KrxVuMdT9zTWDDKqzKkUorMazigSgvSfV17WD7McLfQmKEyfRHB60ql-s5DI7tDj3r2q0o8s-RGNFCCre73TzyZB_AT4AAZH_ViFl7m5ndvhExzuegfkcQnxZEtqv8mZqM6KxYQbXmLQ615Ci4jrrDUpuFvtAaDNdTl7aL_NhPFzSYSaypOA0'
+        }
+    };
+</script>
 
-      document.getElementById("file-input").addEventListener("change", async () => {
-        const data = await readExcelData();
-        data.shift(); // Remove the first row with the headers
-        data.forEach(row => {
-          const customerId = row[0];
-          const contractNo = row[1];
-          const countryCode = row[2];
-          fetchData(customerId, contractNo, countryCode);
-        });
-      });
+    <link rel="stylesheet" type="text/css" href="//i.s-microsoft.com/fonts/segoe-ui/west-european/normal/latest.css">
+    <link rel="stylesheet" type="text/css" href="//i.s-microsoft.com/fonts/segoe-ui/west-european/light/latest.css">
+    <link rel="stylesheet" type="text/css" href="//i.s-microsoft.com/fonts/segoe-ui/west-european/semilight/latest.css">
+    <link rel="stylesheet" type="text/css" href="//i.s-microsoft.com/fonts/segoe-ui/west-european/semibold/latest.css">
+    <link rel="stylesheet" type="text/css" href="//i.s-microsoft.com/fonts/segoe-ui/west-european/bold/latest.css">
 
-      // Fetch the data from the API
-      const fetchData = (customerId, contractNo, countryCode) => {
-        fetch(
-          `https://developer-portal-api-stage.otiselevator.com/elevatormaintenance/api/latestmaintenanceinfo?country_code=${countryCode}&customer_id=${customerId}&contract_no=${contractNo}`
-        )
-          .then(response => response.json())
-          .then(data => {
-            const maintenanceBody = document.getElementById("maintenance-body");
-            data.forEach(maintenanceInfo => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${maintenanceInfo.elevator_id}</td>
-                <td>${maintenanceInfo.maintenance_type}</td>
-                <td>${maintenanceInfo.maintenance_date}</td>
-              `;
-              maintenanceBody.appendChild(row);
+    <script src="/Modules/Portals.Web.Core/scripts/jquery/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/scripts/jquery/jquery-migrate-3.3.2.min.js" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/apiphany.framework?v=l1TmDGRzi5BbSTvzhWHJX4c_57wZ00BGumVeDGG3VzE1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/scripts/amcharts-2.10.min.js" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/core.ui.charts?v=XoezGd6W06rwIminnGn9jMckmPqg5plUpiJGSi50rjw1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/scripts/underscore-1.4.4.min.js" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/core.utils?v=Kw1cnVxNuu1R6YkW-HGVgDE9lyJYE8JhmoifSnNANUI1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Analytics/Scripts/analytic.admin?v=Md8KjYHRYPLO1r_Dh0h-DePxjx5HHikJjPwvwzt-Mkc1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/ko?v=5xJ-o7uqL91NL4lnxsbkECSRGwBK8cntUU3zzvoZ1Hk1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/core.framework?v=hroeQ75Ip73bfrUsr9W2p-waF7FBh834LJ4bNstTAn01" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/dialog?v=0awRQqPS5jGOf0laQPrBF3abhS_tWBtvU232GtTBLkU1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Analytics/Scripts/analytic.ataglance?v=FQPY_vjF24aWnR-kp3nzCntdKyKbs9B0BeD3IX-uNek1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/menu?v=oG8coa6MlNhFhyV8VU6F46JvdcO2AK5rqDbf4KAy2ec1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/scopepicker?v=wat2J0p93XJktOrOdBrX2i4cFx95RgUwTwcVZ1KuM7A1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Core/Scripts/common.customizer?v=hKUdFmRwNF8t46ZVm0PQrLiQRAvGMIA9IHQXvvaq45k1" type="text/javascript"></script>
+<script src="/Modules/Portals.Web.Analytics/Scripts/analytic.developer?v=oZO9KslnwPE23V7E2HKp79pOAHdqcrpzZNiEGNriXzo1" type="text/javascript"></script>
+<!--[if lt IE 9]>
+<script src="/Themes/Portals.Themes.Bootstrap/scripts/html5.js" type="text/javascript"></script>
+<![endif]-->
+<!--[if lt IE 9]>
+<script src="/Themes/Portals.Themes.Bootstrap/scripts/respond.min.js" type="text/javascript"></script>
+<![endif]-->
+<meta content="Orchard" name="generator" />
+<link href="/themes/portals.themes.bootstrap/styles/bootstrap.published.less" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+    
+    
+<script type="text/javascript">
+    (function () {
+        var browserInfo = (function () {
+            try {
+                var ua = navigator.userAgent,
+                    tem,
+                    M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+                if (/trident/i.test(M[1])) {
+                    tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+                    return 'IE ' + (tem[1] || '');
+                }
+                if (M[1] === 'Chrome') {
+                    tem = ua.match(/\bOPR\/(\d+)/)
+                    if (tem != null) return 'Opera ' + tem[1];
+                }
+                M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+                if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+                return M.join(' ');
+            } catch (e) {
+                return "undefined";
+            }
+        })();
+
+        $(window).on('load', function () {
+            var timing = performance.timing;
+            var servertime = timing.responseEnd - timing.requestStart;
+            var pageRendertime = new Date().getTime() - timing.responseEnd;
+            var url = '/log/';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                header: {
+                    activityId: '26d0dde8-cc58-49c4-b6a5-309d0ac5a51d'
+                },
+                data: {
+                    __RequestVerificationToken: 'T2vffhhabU1lRY1Hw42HxDqTTvvy7DlzH4IxNnGSDLye4HUAItpGKr84PB8fc686yH5osdbQlwo9nnuF_ImmrOiOBX0Tv3FqCqLyav0od1KJaAAX_x3xcdL-qlseTtaOwItHjIUss8lafo_qRvudnrgU7BtYGXq8-IdSQovGIgyNR7872IDsgg3GmPLWq4Kh0',
+                    service: window.location.hostname,
+                    path: window.location.pathname,
+                    serverTime: servertime,
+                    pageRenderTime: pageRendertime,
+                    activityId: '26d0dde8-cc58-49c4-b6a5-309d0ac5a51d',
+                    browserInfo: browserInfo
+                },
             });
-          });
-      };
-    </script>
-  </body>
-</
+        });
+    })()
+</script>
+
+    
+
+
+<div id="ap-container" class="layout">
+        <div class="layout-row">
+            <div class="zone-header layout">
+                <header role="heading">
+                    
+<!-- User Story: 594334 -->
+<script src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/JS/tou-storage.js"></script>
+
+<style>
+/* ------ Changes by Vaibhavi ----- */
+img#headerImg {
+    display: block !important;
+    min-width: 220px;
+    padding: 2px 0 8px;
+}
+
+/* ------ End Changes by Vaibhavi ----- */
+
+.navbar-default{
+  text-transform: none;
+}
+#account-menu{
+    text-transform: uppercase;
+}
+
+@font-face {
+  font-family: NunitoSans-Regular;
+  src: url(https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Fonts/NunitoSans-Regular-1.ttf);
+}
+   
+
+@font-face {
+  font-family: PlayfairDisplay-Bold;
+  src: url(https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Fonts/PlayfairDisplay-Bold-1.ttf);
+}
+
+@font-face {
+  font-family: GrifoM-Medium;
+  src: url(https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Fonts/Grifo%20M%20Medium.ttf);
+}
+
+@font-face {
+  font-family: NunitoSans-Bold;
+  src: url(https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Fonts/NunitoSans-Bold.ttf);
+}
+
+body{
+    overflow-x: hidden;
+    font-family: "NunitoSans-Regular";
+}
+.navbar-nav{
+    display: block !important;
+}
+.zone-content {
+    background-color: #fff;
+    padding: 0px;
+}
+.zone-footer{
+    padding: 0px 0px;
+}
+#ap-container {
+    height: 100% !important;
+    max-width: 100%;
+    margin: 0 auto;
+    display: table;
+}
+.zone-header {
+    color: rgb(255, 255, 255);
+    padding: 0px;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    border-radius: 0px;
+    background-color: #041E42;
+}
+.navbar-default{
+    background-color: #041E42;
+}
+
+/*################### media query #############################*/
+
+/****[UI Implementation] Otis logo Alignment(Mobile responsiveness) - DEV, QA and STAGE****/
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+    #headerImageContainer {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    background-color: #041E42;
+    width: 200px;
+    height: 40px;
+    padding-left:0px;
+    padding-right:0px;
+}
+}
+/****** end here *********/
+
+/* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
+@media only screen and (min-width: 320px) and (max-width: 374px) {
+/*setting the background-image*/
+
+#ap-container {
+display: inline-block;
+max-width:100%;
+height: auto !important;
+}
+ 
+#Banner_message h1{
+margin-bottom: 0px;
+}
+
+#Banner_message h4{
+margin-top: 0px;
+position: relative;
+bottom: 37px;
+right: 0%;
+}
+#Banner_message{
+position: absolute;
+    top: 0%;
+    right: 50%;
+    width: 50%;
+    font-size: 75%;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    }
+    #Banner_message h1, h4{
+        color:#1a2443;
+        text-shadow: 2px 1px 1px white
+    }
+    #underlineImage{
+        position: relative;
+        bottom: 27px;
+        right: 50px;
+    }
+    
+    #HomePage_Banner_message {
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-size: 50%;
+    white-space: nowrap;
+}
+ #HomePage_Banner_message h1{
+        color:white;
+        text-shadow: 0.1em 0.1em 0.2em black
+    }
+    
+    #home-grid_row2_col2{
+    
+        position: absolute;
+        vertical-align: top;
+    }
+    
+    #home-grid_row2_col1{
+    
+        padding-top: 70%;
+        padding-bottom: 10%;
+    }
+    #signin_signup_header
+    {
+        margin-top:  0px;
+    }
+} /*END (max-width: 374px) */
+
+
+/* iPhone 6, 6S, 7, 8, and X */
+@media only screen and (min-width: 375px) and (max-width: 413px) {
+
+#ap-container {
+display: inline-block;
+max-width:100%;
+height: auto !important;
+}
+.navbar{
+    min-height: 30px;
+}
+#Banner_message h1{
+margin-bottom: 0px;
+}
+
+#Banner_message h4{
+margin-top: 0px;
+position: relative;
+bottom: 37px;
+right: 0%;
+}
+#Banner_message{
+position: absolute;
+    top: 0%;
+    right: 50%;
+    width: 50%;
+    font-size: 75%;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    }
+    #Banner_message h1, h4{
+        color:#1a2443;
+        text-shadow: 2px 1px 1px white
+    }
+    #underlineImage{
+        position: relative;
+        bottom: 27px;
+        right: 50px;
+    }
+    
+    #HomePage_Banner_message {
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-size: 50%;
+    white-space: nowrap;
+    /*overflow: hidden;*/
+}
+ #HomePage_Banner_message h1{
+        color:white;
+        text-shadow: 0.1em 0.1em 0.2em black
+    }
+        #home-grid_row2_col2{
+    
+        position: absolute;
+        vertical-align: top;
+    }
+    
+    #home-grid_row2_col1{
+    
+        padding-top: 70%;
+        padding-bottom: 10%;
+    }
+    #signin_signup_header
+    {
+        margin-top:  0px;
+    }
+}/*END (max-width: 413px) */
+
+/* iPhone 6+, 7+, and 8+ */
+@media only screen and (min-width: 414px) and (max-width: 767px) {
+#ap-container {
+display: inline-block;
+max-width:100%;
+height: auto !important;
+}
+.navbar{
+    min-height: 30px;
+}
+#Banner_message h1{
+margin-bottom: 0px;
+}
+
+#Banner_message h4{
+margin-top: 0px;
+position: relative;
+bottom: 37px;
+right: 0%;
+}
+#Banner_message{
+position: absolute;
+    top: 0%;
+    right: 50%;
+    width: 50%;
+    font-size: 75%;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    }
+    #Banner_message h1, h4{
+        color:#1a2443;
+        text-shadow: 2px 1px 1px white
+    }
+    #underlineImage{
+        position: relative;
+        bottom: 27px;
+        right: 50px;
+    }
+    
+    #HomePage_Banner_message {
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-size: 50%;
+    white-space: nowrap;
+}
+ #HomePage_Banner_message h1{
+        color:white;
+        text-shadow: 0.1em 0.1em 0.2em black
+    }
+        #home-grid_row2_col2{
+    
+        position: absolute;
+        vertical-align: top;
+    }
+    
+    #home-grid_row2_col1{
+    
+        padding-top: 70%;
+        padding-bottom: 10%;
+    }
+    #signin_signup_header
+    {
+        margin-top:  0px;
+    }
+
+}/*END (max-width: 767px) */
+
+/* Tablets*/
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+#ap-container {
+/*display: inline-block;*/
+max-width:100%;
+height: auto !important;
+}
+#Banner_message h1{
+margin-bottom: 0px;
+}
+
+#Banner_message h4{
+margin-top: 0px;
+position: relative;
+bottom: 37px;
+right: 0%;
+}
+#Banner_message{
+position: absolute;
+    top: 0%;
+    right: 64%;
+    width: 50%;
+    font-size: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    }
+    #Banner_message h1, h4{
+        color:#1a2443;
+        text-shadow: 2px 1px 1px white
+    }
+    #underlineImage{
+        position: relative;
+        bottom: 20px;
+        right: 67px;
+    }
+    #HomePage_Banner_message{
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-size: 100%;
+    white-space: nowrap;
+    }
+    #HomePage_Banner_message h1{
+        color:white;
+        text-shadow: 0.1em 0.1em 0.2em black
+    }
+    .home-grid img {
+        /*width: 533px;*/
+        width: 100%;
+       height: 356px;
+        /*height: auto;*/
+    }
+} /* END Tablets*/
+
+
+/* Small laptops*/
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+#ap-container {
+/*display: inline-block;*/
+max-width:100%;
+height: auto !important;
+}
+#Banner_message h1{
+margin-bottom: 0px;
+}
+
+#Banner_message h4{
+margin-top: 0px;
+position: relative;
+bottom: 37px;
+right: 0%;
+}
+#Banner_message{
+position: absolute;
+    top: 0%;
+    right: 64%;
+    width: 50%;
+    font-size: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    }
+    #Banner_message h1, h4{
+        color:#1a2443;
+        text-shadow: 2px 1px 1px white
+    }
+    #underlineImage{
+        position: relative;
+        bottom: 20px;
+        right: 67px;
+    }
+    #HomePage_Banner_message{
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-size: 100%;
+    white-space: nowrap;
+    }
+    #HomePage_Banner_message h1{
+        color:white;
+        text-shadow: 0.1em 0.1em 0.2em black
+    }
+} /* END Small laptops*/
+
+/*Laptop and Desktop*/
+@media only screen and (min-width: 1200px){
+    #ap-container {
+    /*display: inline-block;*/
+    max-width:100%;
+    height: auto !important;
+    }
+    
+    #Banner_message h1{
+    margin-bottom: 0px;
+    }
+    
+    #Banner_message h4{
+    margin-top: 0px;
+    position: relative;
+    bottom: 37px;
+    right: 0%;
+    }
+    #Banner_message{
+    position: absolute;
+        top: 0%;
+        right: 64%;
+        width: 50%;
+        font-size: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        
+        }
+        #Banner_message h1, h4{
+            color:#1a2443;
+            text-shadow: 2px 1px 1px white
+        }
+        #underlineImage{
+            position: relative;
+            bottom: 20px;
+            right: 67px;
+        }
+        
+        #HomePage_Banner_message{
+        /*top: 9%;*/
+        top: 5%; /*Neha 8 july 2019*/
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+        font-size: 100%;
+        white-space: nowrap;
+        height: 3.5%;
+        }
+        
+        }
+        #HomePage_Banner_message h1{
+            color:white;
+            text-shadow: 0.1em 0.1em 0.2em black
+        }
+        
+
+}/*END Laptop and Desktop*/
+
+/*################### end media query ############################*/
+
+#headerImageContainer {
+    /*padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;*/
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    background-color: #041E42;
+    /*width: 100%;*/
+}
+
+
+#headerImageContainer1 {
+    /*padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;*/
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    background-color: #041E42;
+    /*width: 100%;*/
+    width:200px;
+    height:40px;
+}
+
+
+#headerImageContainer1 .row{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.navbar-header .container-fluid{
+    margin-right: auto;
+    margin-left: auto;
+   /* padding: 0 !important;*/
+    
+}
+.navbar-collapse .container-fluid{
+    margin-right: auto;
+    margin-left: auto;
+    padding: 0 !important;
+      
+}
+
+/*img#headerImg {
+    display: block !important;
+    min-width: 164px;
+    padding: 0px;
+}*/
+
+
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border-color: transparent;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    background-color: #041E42;
+    width: 100%;
+    left:0;
+}
+
+
+.navbar-default .navbar-header{ /*29 July 2019*/
+   /* padding-left:0%;*/
+}
+
+
+.navbar-default .navbar-toggle{
+border:0px;
+}
+
+.navbar-collapse { /*Added on 23 July 2019*/
+    padding-left: 1px;
+}
+
+img#headerImg {
+    display: block !important;
+    /*min-width: 174px;*/
+    min-width: 200px;
+   /* padding-top: 14.5px;*/
+    padding-top: 11.5px;
+    background-color: #041E42;
+}
+
+img#NavHeaderImg {
+    display: block !important;
+    min-width: 174px;
+    padding-top: 8.5px;
+    padding-bottom: 8.5px;
+}
+
+#LogoSpan{
+    display: block !important;
+    width: 235px;
+    padding-top: 8.5px;
+    padding-bottom: 8.5px;
+}
+
+
+
+#navigation{
+    border-width: 0 0 1px;
+    z-index: 1;
+    top: 9%;
+    background-color: #041E42;
+}
+
+
+
+#ap-container .navbar{
+
+    position: fixed;
+    float: right;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    /*background-color: red;*/
+}
+
+.navbar {
+    margin-bottom: 0;
+    border: 1px solid transparent;
+    position: fixed;
+    float: right;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+  
+}
+
+
+
+@media only screen and (max-width: 767px) {
+    /*.main-image{
+        padding-top:10%;
+    }*/
+    
+    #homePage_mainImageContainer{
+        padding-top:5%; 
+    }
+    #HomePage_Banner_message {
+         top:3%; 
+     }
+    
+    }
+
+
+@media only screen and (min-width: 768px) {
+    /*.main-image{
+        padding-top:10%;
+    }*/
+    
+    #homePage_mainImageContainer{
+        padding-top:3%; 
+    }
+    
+     /*#HomePage_Banner_message {
+         top:5%; 
+     }*/
+     
+
+.navbar-nav>li>a {
+    padding-top:16.5px;
+}
+     
+}
+
+@media only screen and (min-width: 300px) and (max-width: 771px){
+    /*.main-image{
+        padding-top:7%;
+    }*/
+    
+    #homePage_mainImageContainer{
+        padding-top:7%; 
+    }
+    
+     #HomePage_Banner_message {
+        top: 2%;
+        
+    }
+    }
+
+@media only screen and (min-width: 726px) and (max-width: 1200px) {
+      #HomePage_Banner_message {
+        top: 5%;
+    }
+}
+
+.raw{
+    padding-left:2px;
+}
+
+
+/* css for the pages don't have html in Publisher portal ****Start*****/
+
+/*.layout main{
+/*background-color:red;    */
+/*padding-top:5%;*/
+    
+}*/
+
+
+.LayoutPadding {
+   
+}
+
+.LayoutPadding main{
+    /*background-color:red;   */
+    padding-top:8%;
+    padding-left:10%;
+    padding-bottom:5%;
+    min-height: calc(100vh - 156px);
+}
+.LayoutPadding h2{
+    font-family: GrifoM-Medium;
+    color: #041e42;
+    font-size: 32px;
+    text-align: left;
+    padding-bottom: 2%;
+}
+
+.LayoutPadding  .btn-primary {
+    color: #fff;
+    background-color: #041e42;
+    border-color: #041e42;
+    text-transform: uppercase;
+}
+
+.LayoutPadding .btn-primary:hover {
+    border-color: #041e42;
+	background: #fff;
+	color: #041e42;
+}
+
+.LayoutPadding .btn-default {
+	 border-color: #041e42;
+	background-color: #041e42;
+	color: white;
+	text-transform: uppercase;
+}
+
+.LayoutPadding .btn-default:hover {
+    border-color: #041e42;
+	background: #fff;
+	color: #041e42;
+}
+
+.LayoutPadding .row {
+    margin-left: -15px;
+    margin-right: -15px;
+    /*padding-bottom: 2%;*/
+}
+
+
+.LayoutPadding .UnderLine {
+    border-bottom: 4px solid #f65275;
+    width: 3%;
+    margin-left: 0%;
+    margin-top: 0.5%;
+}
+
+
+.LayoutPadding .panel-default {
+    /*border-color: #ddd;*/
+	border: 1px solid transparent;
+}
+
+
+.LayoutPadding .panel-body {
+    padding: 0px;
+}
+
+
+/* css for the pages don't have html in Publisher portal ****End*****/
+/*Media Code Start here*/  
+/* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
+@media only screen and (min-width: 320px) and (max-width: 374px) {
+    .LayoutPadding main{
+        padding-top:28%;
+    }
+	.LayoutPadding .form-control{
+	    width: 80%;
+	}
+	.LayoutPadding .UnderLine {
+        width: 12%;
+    }
+    .LayoutPadding .row{
+		margin-left:0px;
+		margin-right:0px;
+	}
+	.LayoutPadding .row .col-sm-6, .col-md-6{
+	    padding-left: 0px;
+        padding-right: 0px;
+	}
+	.LayoutPadding .form-group .captcha-input{
+	   width: 43.5%; 
+	}
+	.LayoutPadding .form-group .progress{
+	   width: 80%;
+	}
+	.LayoutPadding .row .col-md-2, .col-md-3{
+	    padding-left: 0px;
+	}
+	.LayoutPadding .row .col-md-3{
+	    padding-bottom: 10px;
+	}
+	.MenuUnderLine{
+        width: 5% !important;
+        margin-left: 1% !important;
+        padding-top: 1% !important;
+    }
+}
+/* iPhone 6, 6S, 7, 8, and X */  
+@media only screen and (min-width: 375px) and (max-width: 413px) {
+	.LayoutPadding main{
+        padding-top:28%;
+    }
+	.LayoutPadding .form-control{
+	    width: 80%;
+	}
+	.LayoutPadding .UnderLine {
+        width: 12%;
+    }
+    .LayoutPadding .row{
+		margin-left:0px;
+		margin-right:0px;
+	}
+	.LayoutPadding .row .col-sm-6, .col-md-6{
+	    padding-left: 0px;
+        padding-right: 0px;
+	}
+	.LayoutPadding .form-group .captcha-input{
+	   width: 43.5%; 
+	}
+	.LayoutPadding .form-group .progress{
+	   width: 80%;
+	}
+	.LayoutPadding .row .col-md-2, .col-md-3{
+	    padding-left: 0px;
+	}
+	.LayoutPadding .row .col-md-3{
+	    padding-bottom: 10px;
+	}
+	.MenuUnderLine{
+        width: 5% !important;
+        margin-left: 1% !important;
+        padding-top: 1% !important;
+    }
+}
+/* iPhone 6+, 7+, and 8+ */
+@media only screen and (min-width: 414px) and (max-width: 767px) {
+	.LayoutPadding main{
+        padding-top:28%;
+    }
+	.LayoutPadding .form-control{
+	    width: 80%;
+	}
+	.LayoutPadding .UnderLine {
+        width: 12%;
+    }
+    .LayoutPadding .row{
+		margin-left:0px;
+		margin-right:0px;
+	}
+	.LayoutPadding .row .col-sm-6, .col-md-6{
+	    padding-left: 0px;
+        padding-right: 0px;
+	}
+	.LayoutPadding .form-group .captcha-input{
+	   width: 43.5%; 
+	}
+	.LayoutPadding .form-group .progress{
+	   width: 80%;
+	}
+	.LayoutPadding .row .col-md-2, .col-md-3{
+	    padding-left: 0px;
+	}
+	.LayoutPadding .row .col-md-3{
+	    padding-bottom: 10px;
+	}
+	.MenuUnderLine{
+        width: 5% !important;
+        margin-left: 1% !important;
+        padding-top: 1% !important;
+    }
+}
+/* Tablets*/
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.LayoutPadding main{
+        padding-top:28%;
+    }
+	.LayoutPadding .form-control{
+	    width: 80%;
+	}
+	.LayoutPadding .UnderLine {
+        width: 12%;
+    }
+    .LayoutPadding .row{
+		margin-left:0px;
+		margin-right:0px;
+	}
+	.LayoutPadding .row .col-sm-6, .col-md-6{
+	    padding-left: 0px;
+        padding-right: 0px;
+	}
+    .LayoutPadding .form-group .captcha-input{
+	   width: 43.5%; 
+	}
+	.LayoutPadding .form-group .progress{
+	   width: 80%;
+	}
+	.LayoutPadding .row .col-md-2, .col-md-3{
+	    padding-left: 0px;
+	}
+	.LayoutPadding .row .col-md-3{
+	    padding-bottom: 10px;
+	}
+	.MenuUnderLine{
+        width: 5% !important;
+        margin-left: 1% !important;
+        padding-top: 1% !important;
+    }
+}
+/* Small laptops*/
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+	.LayoutPadding main{
+        padding-top:28%;
+    }
+	.LayoutPadding .form-control{
+	    width: 80%;
+	}
+	.LayoutPadding .UnderLine {
+        width: 12%;
+    }
+    .LayoutPadding .row{
+		margin-left:0px;
+		margin-right:0px;
+	}
+	.LayoutPadding .row .col-sm-6, .col-md-6{
+	    padding-left: 0px;
+        padding-right: 0px;
+	}
+	.LayoutPadding .form-group .captcha-input{
+	   width: 43.5%; 
+	}
+	.LayoutPadding .form-group .progress{
+	   width: 80%;
+	}
+	.LayoutPadding .row .col-md-2, .col-md-3{
+	    padding-left: 0px;
+	}
+	.LayoutPadding .row .col-md-3{
+	    padding-bottom: 10px;
+	}
+}
+
+/*Footer CSS*/
+/*Blackbery Play book*/
+/* iPhone 6+, 7+, and 8+ */
+/*@media only screen and (min-width: 414px) and (max-width: 767px) and (orientation:portrait){
+	#dvOtisLogo{
+		width: 47.41%;
+	}
+}
+@media only screen and (min-width: 414px) and (max-width: 767px) and (orientation:landscape){
+	#dvOtisLogo{
+		width: 50.80%;
+	}
+	#dvOtisLogo img{
+		padding-top: 0;
+	}
+}*/
+
+/*  Start  - User story 73127 - Header collapse button white*/
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffff; 
+}
+
+.navbar-default .navbar-toggle:hover {
+     background-color: transparent; 
+}
+.dropdown-menu>li>a:hover {
+    background-color: transparent;
+    cursor: pointer;
+}
+/* End - User story 73127 - Header collapse button white*/
+
+/*User Story 77303: Home Page - Header Text - Shadow Removal*/
+#HomePage_Banner_message h1{
+    color:white;
+    text-shadow: 0px 0px 30px black;
+}
+/*115637:Footer Changes on Portal start here*/
+/*User Story 77305: Portal: Footer Changes (issue with mobile landscpae mode resolved) CSS Start Here*/
+#dvOtisContent{
+    text-align:right;
+}
+@media only screen and (max-width: 767px) and (min-width: 416px) and (orientation: landscape) {
+    #dvOtisLogo {
+        width: 50% !important;
+    }
+    #dvOtisContent{
+        width: 50% !important;
+    }
+    /*User Story 80678:User Inactivity ( Session Timeout) media CSS Start Here*/
+    #dvModalDialog{
+        width: 42% !important;
+    }
+    #dvModalContent{
+        left: 67% !important;  
+    }
+}
+
+/* Small laptops*/
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+   #dvOtisLogo {
+        width: 50% !important;
+    }
+    #dvOtisContent{
+        width: 50% !important;
+    } 
+}
+/* MacBook laptops*/
+@media only screen and (min-width: 1199px) and (max-width: 2700px) {
+  #dvOtisLogo {
+        width: 40% !important;
+    }
+   
+}
+/*User Story 77305: Portal: Footer Changes (issue with mobile landscpae mode resolved) CSS End Here*/
+/*User Story 97240: Portal: Footer Changes (issue with mobile landscpae mode resolved) CSS start Here*/
+@media only screen and (min-width: 414px) and (max-width: 767px) {
+ #dvOtisLogo img {
+    width: 48px!important;
+}
+}
+@media only screen and (min-width: 375px) and (max-width: 413px) {
+#dvOtisLogo img {
+    width: 40px!important;
+}
+  #dvOtisLogo {
+       padding-left:10px;
+       padding-right:10px;
+        
+    }
+   #dvOtisContent {
+       padding-left:10px;
+       padding-right:10px;
+        
+    }
+    .Contact p {
+    font-size: 12px!important;
+    font-family: NunitoSans-Regular;
+}
+
+}
+@media only screen and (min-width: 320px) and (max-width: 374px) {
+#dvOtisContent {
+       padding-left:0px;
+       padding-right:0px;
+        
+    }
+    #dvOtisLogo {
+       padding-left:5px;
+       padding-right:0px;
+        
+    }
+    #dvOtisLogo img {
+    width: 45px!important;
+}
+    .Contact p {
+    font-size: 11px!important;
+    font-family: NunitoSans-Regular;
+}
+}
+/* end of user story 97420 */
+/*115637:Footer Changes on Portal end here*/
+/*User Story 80678:User Inactivity ( Session Timeout) CSS Start Here*/
+@media only screen and (max-width: 767px) and (min-width: 240px) and (orientation: portrait) {
+    /*User Story 80678:User Inactivity ( Session Timeout) media CSS Start Here*/
+    #dvModalDialog{
+        width: 73% !important;
+    }
+    #dvModalContent{
+       left: 18% !important;
+    }
+}
+.btnSessLogin{
+    padding: 5px 5px;
+    font-size: 14px;
+    color: #FFFFFF;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 25%;
+    background-color: #F65275;
+    border: 2px solid #F65275;
+    border-radius: 0;
+}
+.btnSessLogin:hover{
+    background-color: transparent;
+    color: #041E42;
+    border: 2px solid #F65275;
+}
+.padding-Top{
+    padding-top: 4%;
+}
+.sessModalBody{
+    color: #041e42;
+    font-size: 20px;
+    font-family: "NunitoSans-Regular";
+}
+.modal-backdrop.in {/*background opacity(popup)*/
+    opacity: 0.7;
+}
+#dvModalDialog{
+    width: 400px;
+}
+.dvModalBody{
+    position: relative;
+    padding: 40px;
+    padding-left: 0px;
+    padding-right: 0px; 
+}
+/*User Story 80678:User Inactivity ( Session Timeout) CSS End Here*/
+
+/*User Story 80681:UI Implementation : Portal - Loader Icon CSS Start Here*/
+#loadingDiv{
+    z-index: 1000;
+    /*background-color: rgba(255,255,255,.8);*/
+    background-color:#FFFFFF;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+.imgLoader{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+}
+/*User Story 80681:UI Implementation : Portal - Loader Icon CSS End Here*/
+
+/*User Story 80998:Selected Menu highlighted CSS Start Here*/
+.MenuUnderLine{
+    border-bottom: 4px solid #f65275;
+    width: 50%;
+    margin-left: 20%;
+    padding-top: 8%;
+}
+.navbar-default .navbar-nav>.active>a{
+    color: #fff !important;
+}
+.navbar-nav>li>a {
+    padding-bottom: 10px !important;
+}
+@media only screen and (max-width: 767px) and (min-width: 416px) and (orientation: landscape) {
+    .MenuUnderLine{
+        width: 3.5% !important;
+        margin-left: 0.5% !important;
+        padding-top: 1% !important;
+    }
+}
+/*User Story 80998:Selected Menu highlighted CSS END Here*/
+
+/*Remove Blue Outline CSS Code Start Here*/
+.otisLearnMore,#viewAPI,#viewProduct,#btnSubscribe,#ConfirmBtn,
+#ChangePassword,#UpdateProfile,
+#closeAccount,#saveButton,
+#btnExpiredOk,#signUp,
+#signinButton,#login,
+#btnEulaAcceptAndContinue,#btneCallSubscription,
+#btneCallsubscribe,
+#viewAPIeCall,
+#socketButton,
+#sdkdetailsbtn,
+#processflowbtn,
+#status,
+.close{
+   outline: none !important;
+}
+/*Remove Blue Outline CSS Code end Here*/
+
+/*User Story 85054:Portal Header Padding and Alignment CSS Start Here*/
+#ap-container .navbar{
+	height: 65px !important;
+}
+.navbar-default .navbar-toggle{
+    border: 0px;
+	top: 6px;
+}
+#headerImageContainer{
+    top: 6px !important;
+}
+#headerImageContainer1{
+    top: 6px !important;
+}
+.navbar-default .navbar-collapse{
+    padding-top: 4px !important;
+}
+/*User Story 85054:Portal Header Padding and Alignment CSS END Here*/
+
+/* break long strings in subscription names */
+td div.row div.col-lg-6 {
+    word-wrap: break-word;
+}
+</style>
+<!--Set Favicon--> 
+
+<!--Start Show Session Expire Popup here -->
+<div class="modal fade" id="session-expired-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div id="dvModalDialog" class="modal-dialog" role="document" style="top: 20%;">
+        <div id="dvModalContent" class="modal-content">
+            <div class="modal-body sessModalBody dvModalBody">
+                <div class="text-center">
+                    <img src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Images/Session_Inactive.svg" style="width:50px;">
+                </div>
+                <div class="text-center sessModalBody padding-Top">
+                    Your session has expired<br>
+                    due to inactivity.<br>
+                </div>
+                <div class="text-center padding-Top">
+                    <button id="btnExpiredOk" onclick="sessionExpiredRedirect()" type="button" class="btnSessLogin">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End Show Session Expire Popup here -->
+
+<script> 
+//Session Code Start here
+//set session Timeout 
+var timeoutInMiliseconds = 20*60000;//milisecond(1 Minutes=60000)
+var timeoutId;
+var isTimeOut=false;
+
+function startTimer() {
+    // window.setTimeout returns an Id that can be used to start and stop a timer
+    timeoutId = window.setTimeout(doInactive, timeoutInMiliseconds)
+}
+
+function doInactive() {
+    // does whatever you need it to actually do - probably signs them out or stops polling the server for info
+    window.clearTimeout(timeoutId);
+    sessLogOut();
+    isTimeOut=true;
+    localStorage.clear();
+    localStorage.setItem("IS_SESSION_TIMEOUT", true);
+}
+
+function setupTimers() {
+    //checking first user is logged or not
+    if ($("#account-menu").length != 0 && $(".pull-right").text().trim() != 'Sign in') {
+        //adding Event Listener
+        document.addEventListener("mousemove", resetTimer, false);
+        document.addEventListener("mousedown", resetTimer, false);
+        document.addEventListener("keypress", resetTimer, false);
+        document.addEventListener("touchmove", resetTimer, false);
+
+        startTimer();
+    }
+}
+function resetTimer() {
+    window.clearTimeout(timeoutId);
+    startTimer();
+}
+
+function sessionExpiredRedirect() {
+    RedirectToLoginPage();
+}
+function sessLogOut() {
+    var url = window.location.origin + "/signout";
+    $(location).attr('href', url);
+}
+function RedirectToLoginPage() {
+    var url = window.location.origin + "/signin";
+    $(location).attr('href', url);
+}
+//Session Code End Here
+
+//Loader Code Start Here
+var isLoaderStart=false;
+$(window).on("keydown", checkKeycode);
+function checkKeycode(e) {
+    var keycode;
+    if (window.event)
+    keycode = window.event.keyCode;
+    else if (e)
+    keycode = e.which;
+    if (keycode == 116 ||(e.ctrlKey && keycode == 82) ||(e.ctrlKey && keycode == 116)) {
+        loaderHTMLCode();
+    }
+}
+
+$(window).on('load', function () {
+    setTimeout(removeLoader, 1000); //wait for page load PLUS 1 seconds.
+});
+function removeLoader() {
+    $("#loadingDiv").fadeOut(500, function () {
+        $("#loadingDiv").remove(); 
+    });
+}
+function loaderHTMLCode(){
+    isLoaderStart=true;
+    $('body').append('<div id="loadingDiv"><img class="imgLoader" src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Loader/Loader_Bigger.gif"></div >');
+}
+function loaderHTMLMargin(){
+    $("#loadingDiv").css("margin-top", ($('.navbar').height()+2) + "px");
+}
+//Loader Code End Here
+
+//Global Variable
+var LIMIT_OF_SCREEN_WIDTH=756;
+
+/*(function() { 
+//Loader Code Start Here
+$('body').append('<div id="loadingDiv"><img class="imgLoader" src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Loader/Test_Loader.gif"></div >');      
+//Loader Code End Here    
+var link = document.createElement('link'); 
+link.type = 'image/png'; 
+link.rel = 'shortcut icon'; 
+link.href = 'https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Icons/Otis_Icon_32x32.png'; 
+document.getElementsByTagName('head')[0].appendChild(link); 
+}()); */
+
+function AddFaviconTitle()
+{
+//Loader Code Start Here
+loaderHTMLCode();
+//Loader Code End Here
+var link = document.createElement('link'); 
+link.type = 'image/png'; 
+link.rel = 'shortcut icon'; 
+link.href = 'https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Icons/Otis_Icon_32x32.png'; 
+document.getElementsByTagName('head')[0].appendChild(link); 
+}
+window.onpaint = AddFaviconTitle();
+
+// ****Start*****Header hide on scrolling //
+/* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
+
+var prevScrollpos = window.pageYOffset;
+window.onscroll = function() {
+var currentScrollPos = window.pageYOffset;
+if (prevScrollpos > currentScrollPos) {//scroll Up
+  } 
+  else {//Scroll Down
+     $('.navbar-collapse').hide();
+  }
+  isCookieBannerVisible(false);//fixes for cookies banner with toggle class
+  $('[data-toggle="dropdown"]').parent().removeClass('open');
+  $(".dropdown-menu").css("display","");
+  CookieBannerDesktopView(true);
+  prevScrollpos = currentScrollPos;
+}
+
+ $(document).ready(function(){
+        if(isLoaderStart){
+            loaderHTMLMargin();
+            isLoaderStart=false;
+        }
+        addPaddingToBanner();//added padding to banner-user story:85054
+        /*User Story 80998:Selected Menu highlighted Function Start Here*/
+        addUnderLineToMenu();
+        /*User Story 80998:Selected Menu highlighted Function End Here*/
+        //Session Code start Here
+        setupTimers();
+        if(localStorage.getItem("IS_SESSION_TIMEOUT")){
+            $("#session-expired-modal").modal('show');
+            $('.modal-backdrop').css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 100);
+            $("#session-expired-modal").css('z-index', 2000);
+            isTimeOut=false;
+            localStorage.clear();
+        }
+        //Session Code End Here
+        //*****Start***** adding css to the pages not present in publisher portal ***********
+        $(".zone-content").addClass('LayoutPadding');
+        $('.LayoutPadding h2').append('<div class="UnderLine"></div>');  
+        //*****Start***** adding css to the pages not present in publisher portal ***********
+        
+        $(".navbar-toggle").click(function(){
+            $(".navbar-collapse").toggle("slow", function(){
+                $(".dropdown-menu").css("display","");
+                isCookieBannerVisible(true);//fixes for cookies banner with toggle class
+            });
+         });
+          //User name menu click event
+         $("#account-menu").click(function(event){
+             $("[aria-labelledby='account-menu']").toggle("slow", function(){
+                CookieBannerDesktopView(false); 
+                isCookieBannerVisible(true);//fixes for cookies banner with toggle class
+            }); 
+         });
+         
+          /*User Story 97591*/
+         isConfirmProcessFlow();
+         /*User Story 97591*/
+         
+         /*User Story 100850*/
+         isBtnClickWithFlow();
+         /*User Story 100850*/
+         
+         // User Story: 594334
+         termsOfUseStorage();
+         
+        // Regex for subscription names
+        // User Story: 668798
+         validateSubscriptionName();
+         
+         // Regex for password reset
+         // User Story: 668815
+         validateResetPassword();
+         
+         // Set password autocomplete to off
+         // User Story: 668802
+         passwordAutocompleteOff();
+
+         // Make changes to BMS Product display name
+         // User Stroy: 738674
+         updateSubscriptionDetails();
+
+         // Update code sample backend for BMS Product
+         // User Stroy: 738674
+         updateCodeSampleBackend();
+
+         // Update BMS Product display name for the profile page
+         // User Stroy: 738674
+         updateProfileSubscriptionName();
+    });
+
+$(document).mouseup(function(e) 
+{
+    var container = $(".navbar-collapse");
+
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) 
+    {
+        container.hide();
+        $('.navbar-default .navbar-toggle:hover').css('background-color', 'transparent');
+        $('[data-toggle="dropdown"]').parent().removeClass('open');
+        $(".dropdown-menu").css("display","");
+        isCookieBannerVisible(false);//fixes for cookies banner with toggle class
+        CookieBannerDesktopView(true);
+    }
+});
+// ****End*****Header hide on scrolling //
+
+
+$( window ).resize(function() {
+    var container = $(".navbar-collapse");
+    $('[data-toggle="dropdown"]').parent().removeClass('open');
+    $(".dropdown-menu").css("display","");
+    if ($(window).width()>LIMIT_OF_SCREEN_WIDTH)
+    {
+        container.show();
+        isCookieBannerVisible(true);//fixes for cookies banner with toggle class
+    }
+    else
+    {
+        container.hide();
+        isCookieBannerVisible(false);//fixes for cookies banner with toggle class
+        CookieBannerDesktopView(true);
+    }
+});
+
+function isCookieBannerVisible(isToggleClick)
+{
+     if ($('#cookie_notice').is(':visible')) {
+       if(isToggleClick){
+           $("#cookie_notice").css("top", (($('.navbar-collapse').height())) + "px");//fixes for cookies banner (cauculate navbar height and give top for baaner)  
+        }
+        else{
+           $("#cookie_notice").css("top", (($('.navbar').height()) + 2) + "px");//fixes for cookies banner (cauculate navbar height and give top for baaner)  
+        } 
+     }
+}
+function CookieBannerDesktopView(isScroll){
+    if ($('#cookie_notice').is(':visible')) {
+        if(isScroll){
+            if ($(window).width()>LIMIT_OF_SCREEN_WIDTH){
+                $(".dropdown-menu").css("position","absolute"); 
+                $(".dropdown-menu").css("background-color","#fff"); 
+                $(".dropdown-menu>li>a").css("color","#262626"); 
+            }
+        }
+        else{
+            if ($(window).width()>LIMIT_OF_SCREEN_WIDTH){
+                $("ul[class='dropdown-menu']").css("position","inherit"); 
+                $("ul[class='dropdown-menu']").css("background-color","#041E42");
+                $(".dropdown-menu>li>a").css("color","#FFFFFF"); 
+            }
+        } 
+     }
+}
+/*User Story 80998:Selected Menu highlighted Function Start Here*/
+function addUnderLineToMenu(){
+    //if ($("#account-menu").length != 0 && $("#account-menu").text() != 'Sign in'){
+        var strDiv='<div class="MenuUnderLine"></div>';
+        if($($('.navbar-collapse .navbar-nav .active').parent('ul').get(0)).length>0){
+           $($('.navbar-collapse .navbar-nav .active').parent('ul').get(0)).attr('id', 'ActiveMenu');
+            var arrMenuSplit=$('ul#ActiveMenu').find('li.active')[0].innerHTML.trim().split('<');
+            if(arrMenuSplit.length>0){
+                $('ul#ActiveMenu').find('li.active')[0].innerHTML='<'+arrMenuSplit[1]+strDiv+'<'+arrMenuSplit[2];
+            } 
+        }
+    //}
+}
+
+/*User Story 85054:Portal Header Padding and Alignment Code Start Here*/
+function addPaddingToBanner(){
+    $("#homePage_mainImageContainer").css("padding-top", (($('.navbar').height())) + "px");//home page
+    $("#bannerContainer").css("padding-top", (($('.navbar').height())) + "px");//Product,API and Profile Page
+}
+/*User Story 85054:Portal Header Padding and Alignment Code Start Here*/
+
+/*User Story 97591:Subscribe page should not be accessible using url Code End Here*/
+function isConfirmProcessFlow(){
+    if (window.location.href.toUpperCase().indexOf("subscribe".toUpperCase()) > -1) {
+      var IS_VALID_CONFIRM_SUBSCRIBE_FLOW =localStorage.getItem("IS_VALID_CONFIRM_SUBSCRIBE_FLOW");
+      if(IS_VALID_CONFIRM_SUBSCRIBE_FLOW!="YES" || IS_VALID_CONFIRM_SUBSCRIBE_FLOW=="" || IS_VALID_CONFIRM_SUBSCRIBE_FLOW==null){
+            var url = window.location.origin+"/products";
+		    $(location).attr('href', url);
+      }
+      localStorage.removeItem("IS_VALID_CONFIRM_SUBSCRIBE_FLOW");
+      /*User Story 112264*/
+        removeTermsOfUseDiv();
+      /*User Story 112264*/
+    } 
+}
+/*User Story 97591:Subscribe page should not be accessible using url Code End Here*/
+
+/*User Story 100850:Every Btn Click should be process flow Code Start Here*/
+function isBtnClickWithFlow(){
+    if (window.location.href.toUpperCase().indexOf("socketIO".toUpperCase()) > -1 ) {
+      var IS_VALID_BTN_CLICK_FLOW =localStorage.getItem("IS_VALID_BTN_CLICK_FLOW");
+      if(IS_VALID_BTN_CLICK_FLOW!="YES" || IS_VALID_BTN_CLICK_FLOW=="" || IS_VALID_BTN_CLICK_FLOW==null){
+            var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+		    $(location).attr('href', url);
+      }
+       localStorage.removeItem("IS_VALID_BTN_CLICK_FLOW");
+    }
+    else if (window.location.href.toUpperCase().indexOf("sdk".toUpperCase()) > -1) {
+      var IS_VALID_BTN_CLICK_FLOW =localStorage.getItem("IS_VALID_BTN_CLICK_FLOW");
+      if(IS_VALID_BTN_CLICK_FLOW!="YES" || IS_VALID_BTN_CLICK_FLOW=="" || IS_VALID_BTN_CLICK_FLOW==null){
+            var url =window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+		    $(location).attr('href', url);
+      }
+       localStorage.removeItem("IS_VALID_BTN_CLICK_FLOW");
+    }
+    else if (window.location.href.toUpperCase().indexOf("RegionalAvailability".toUpperCase())> -1) {
+      var IS_VALID_BTN_CLICK_FLOW =localStorage.getItem("IS_VALID_BTN_CLICK_FLOW");
+      if(IS_VALID_BTN_CLICK_FLOW!="YES" || IS_VALID_BTN_CLICK_FLOW=="" || IS_VALID_BTN_CLICK_FLOW==null){
+            var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+		    $(location).attr('href', url);
+      }
+       localStorage.removeItem("IS_VALID_BTN_CLICK_FLOW");
+    }
+      else if (window.location.href.toUpperCase().indexOf("SandboxIO".toUpperCase())> -1) {
+      var IS_VALID_BTN_CLICK_FLOW =localStorage.getItem("IS_VALID_BTN_CLICK_FLOW");
+      if(IS_VALID_BTN_CLICK_FLOW!="YES" || IS_VALID_BTN_CLICK_FLOW=="" || IS_VALID_BTN_CLICK_FLOW==null){
+            var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+		    $(location).attr('href', url);
+      }
+       localStorage.removeItem("IS_VALID_BTN_CLICK_FLOW");
+    }
+    /* else if (window.location.href.toUpperCase().indexOf("services".toUpperCase())> -1) {
+      var IS_VALID_BTN_CLICK_FLOW =localStorage.getItem("IS_VALID_BTN_CLICK_FLOW");
+      if(IS_VALID_BTN_CLICK_FLOW!="YES" || IS_VALID_BTN_CLICK_FLOW=="" || IS_VALID_BTN_CLICK_FLOW==null){
+            var url = window.location.origin;//.substring(0, window.location.href.lastIndexOf('/'));
+		    $(location).attr('href', url);
+      }
+       localStorage.removeItem("IS_VALID_BTN_CLICK_FLOW");
+    } */
+}
+/*User Story 100850:Every Btn Click should be process flow Code End Here*/
+
+/*User Story 112264:Product Page - Products alignment Code Start Here*/
+function removeTermsOfUseDiv(){
+    if($('#IsAgreed').length){
+      $("#IsAgreed"). prop("checked", true);
+	  $('#IsAgreed').parent().css("display","none");
+    }
+}
+/*User Story 112264:Product Page - Products alignment Code End Here*/
+
+// Regex for subscription names
+// User Story: 668798
+function validateSubscriptionName() {
+    let subscriptionUrl = window.location.pathname.toLowerCase();
+    let subscriptionRegex = /^[A-Za-z0-9\(\)\-_\.\s]+$/;
+    let subscriptionLengthErrorHTML = '<div aria-relevant="text" class="validation-summary-errors alert alert-danger validateSubscription" role="alert"><ul><li>Subscription name should be between 1 and 99 characters long</li></ul></div>';
+    let subscriptionErrorHTML = '<div aria-relevant="text" class="validation-summary-errors alert alert-danger validateSubscription" role="alert"><ul><li>The value you entered for Subscription name is not supported for security reasons. Please limit your usage to the following characters: letters, numbers, spaces, periods, (, ), -, and _.</li></ul></div>';
+    if (subscriptionUrl.includes("/subscribe")) {
+        let subscriptionHeader = document.getElementsByTagName("h2")[0];
+        $("body").on("submit", "form:first", function(e) {
+            let subscriptionName = document.getElementById("Name").value;
+            let errorHTML = document.getElementsByClassName("validateSubscription")[0];
+            if (errorHTML) {
+                errorHTML.remove();   
+            }
+            if (subscriptionName.length == 0 || subscriptionName.length > 99) {
+                subscriptionHeader.insertAdjacentHTML("afterend", subscriptionLengthErrorHTML);
+                e.preventDefault();
+            }
+            else if (!subscriptionRegex.test(subscriptionName)) {
+                subscriptionHeader.insertAdjacentHTML("afterend", subscriptionErrorHTML);
+                e.preventDefault();
+            }
+        });
+    }
+    else if (subscriptionUrl.includes("/rename")) {
+        let subscriptionHeader = document.getElementsByTagName("h2")[0]
+        $("body").on("submit", "form:first", function(e) {
+            let subscriptionName = document.getElementById("SubscriptionName").value;
+            let errorHTML = document.getElementsByClassName("validateSubscription")[0];
+            if (errorHTML) {
+                errorHTML.remove();   
+            }
+            if (subscriptionName.length == 0 || subscriptionName.length > 99) {
+                subscriptionHeader.insertAdjacentHTML("afterend", subscriptionLengthErrorHTML);
+                e.preventDefault();
+            }
+            else if (!subscriptionRegex.test(subscriptionName)) {
+                subscriptionHeader.insertAdjacentHTML("afterend", subscriptionErrorHTML);
+                e.preventDefault();
+            }
+        });
+    }
+}
+
+// Regex for password reset
+// User Story: 668815
+function validateResetPassword() {
+    let resetPasswordURL = window.location.pathname.toLowerCase();
+    let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ !"#$%&'()*+,\-.\/:;<=>?@\[\\\]^_`{|}~])[A-Za-z\d !"#$%&'()*+,\-.\/:;<=>?@\[\\\]^_`{|}~]+$/;
+    let validationSummaryMessage = '<div aria-relevant="text" class="validation-summary-errors alert alert-danger" role="alert"><ul><li>Password is too weak.</li></ul></div>';
+    let passwordWeakMessage = '<li>Password is too weak.</li>';
+    let passwordErrorMessage = '<li id="passwordCheck"><span style="color: #d52929">Your password is required to have a lowercase letter, uppercase letter, number, and special character.</span></li>';
+    let resetHeader = document.getElementsByTagName("h2")[0];
+    if (resetPasswordURL.includes("/password/change")) {
+        $("body").on("input", "#NewPassword", function(e) {
+            let checkPassword = document.getElementById("NewPassword").value;
+            let passwordErrorList = document.getElementsByClassName("error-list")[0];
+            if (!passwordRegex.test(checkPassword)) {
+                setTimeout(() => {
+                    let passwordComplexityError = document.getElementById("passwordCheck");
+                    if (!passwordComplexityError) {
+                        passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                    }
+                }, "500")
+            }
+            else {
+                let passwordComplexityError = document.getElementById("passwordCheck");
+                if (passwordComplexityError) {
+                    passwordComplexityError.remove();
+                }
+            }
+        });
+        $("body").on("submit", "form:first", function(e) {
+            let checkPassword = document.getElementById("NewPassword").value;
+            let passwordErrorList = document.getElementsByClassName("error-list")[0];
+            let validationSummary = document.getElementsByClassName("validation-summary-errors")[0];
+            if (!passwordRegex.test(checkPassword) && !isNullOrWhitespace(checkPassword)) {
+                e.preventDefault();
+                let passwordComplexityError = document.getElementById("passwordCheck");
+                if (passwordComplexityError) {
+                    passwordComplexityError.remove();
+                }
+                if (!validationSummary) {
+                    resetHeader.insertAdjacentHTML("afterend", validationSummaryMessage);
+                    passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                }
+                else if (validationSummary) {
+                    validationSummary = validationSummary.getElementsByTagName("ul")[0];
+                    if (validationSummary.innerHTML.includes("Password is too weak.")) {
+                        passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                    }
+                    else {
+                        validationSummary.insertAdjacentHTML("beforeend", passwordWeakMessage);
+                        passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                    }
+                }
+                window.scrollTo(0, 0);
+            }
+        });
+    }
+    else if (resetPasswordURL.includes("/confirm/password") || resetPasswordURL.includes("/confirm-v2/password")) {
+        $("body").on("input", "#password", function(e) {
+            let checkPassword = document.getElementById("password").value;
+            let passwordErrorList = document.getElementsByClassName("error-list")[0];
+            if (!passwordRegex.test(checkPassword)) {
+                setTimeout(() => {
+                    let passwordComplexityError = document.getElementById("passwordCheck");
+                    if (!passwordComplexityError) {
+                        passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                    }
+                }, "500")
+            }
+            else {
+                let passwordComplexityError = document.getElementById("passwordCheck");
+                if (passwordComplexityError) {
+                    passwordComplexityError.remove();
+                }
+            }
+        });
+        $("body").on("submit", "form:first", function(e) {
+            let checkPassword = document.getElementById("password").value;
+            let passwordErrorList = document.getElementsByClassName("error-list")[0];
+            let validationSummary = document.getElementsByClassName("validation-summary-errors")[0];
+            if (!passwordRegex.test(checkPassword) && !isNullOrWhitespace(checkPassword)) {
+                e.preventDefault();
+                let passwordComplexityError = document.getElementById("passwordCheck");
+                if (passwordComplexityError) {
+                    passwordComplexityError.remove();
+                }
+                if (!validationSummary) {
+                    resetHeader.insertAdjacentHTML("afterend", validationSummaryMessage);
+                    passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                }
+                else if (validationSummary) {
+                    validationSummary = validationSummary.getElementsByTagName("ul")[0];
+                    if (validationSummary.innerHTML.includes("Password is too weak.")) {
+                        passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                    }
+                    else {
+                        validationSummary.insertAdjacentHTML("beforeend", passwordWeakMessage);
+                        passwordErrorList.insertAdjacentHTML("beforeend", passwordErrorMessage);
+                    }
+                }
+                window.scrollTo(0, 0);
+            }
+        });
+    }
+}
+
+// Set password autocomplete to off
+// User Story: 668802
+function passwordAutocompleteOff() {
+    setTimeout(() => {
+    let URL = window.location.pathname.toLowerCase();
+    if (URL.includes("/password/change")) {
+        document.getElementById("Password").setAttribute("autocomplete", "off");
+        document.getElementById("NewPassword").setAttribute("autocomplete", "off");
+        document.getElementById("PasswordConfirm").setAttribute("autocomplete", "off");
+    }
+    else if (URL.includes("/confirm/password") || URL.includes("/confirm-v2/password") || URL.includes("signup")) {
+        document.getElementById("password").setAttribute("autocomplete", "off");
+        document.getElementById("passwordConfirm").setAttribute("autocomplete", "off");
+    }
+    }, "500")
+}
+
+function updateSubscriptionDetails() {
+    setTimeout(() => {
+        let path = window.location.pathname.toLowerCase()
+        if (path == "/products/bms-sandbox/subscribe") {
+            let form = document.getElementsByTagName("form")[0];
+            let productName = form.getElementsByClassName("col-md-10")[0];
+            let subscriptionName = form.getElementsByTagName("input")[0];
+            productName.innerHTML = "<p><b>Building Management (Sandbox)</b></p>";
+            subscriptionName.value = "Building Management (Sandbox)"
+        }
+        else if (path == "/products/bms-production/subscribe") {
+            let form = document.getElementsByTagName("form")[0];
+            let productName = form.getElementsByClassName("col-md-10")[0];
+            let subscriptionName = form.getElementsByTagName("input")[0];
+            productName.innerHTML = "<p><b>Building Management (Production)</b></p>";
+            subscriptionName.value = "Building Management (Production)"
+        }
+    }, "1000")
+}
+
+function updateCodeSampleBackend() {
+    setTimeout(() => {
+        let path = window.location.pathname.toLowerCase()
+        if (path.includes("/docs/services/bms-sandbox/operations/")) {
+            let curl = document.getElementsByClassName("plain")[0].innerHTML;
+            let csharp = document.getElementsByClassName("csharp")[0].innerHTML;
+            let java = document.getElementsByClassName("java")[0].innerHTML;
+            let javascript = document.getElementsByClassName("xml")[1].innerHTML;
+            let objc = document.getElementsByClassName("objc")[0].innerHTML;
+            let php = document.getElementsByClassName("php")[0].innerHTML;
+            let python = document.getElementsByClassName("python")[1].innerHTML;
+            let ruby = document.getElementsByClassName("ruby")[0].innerHTML;
+
+            let sandboxBackend = "https://sandbox.ems.otis.com/api/bms";
+
+            let curlReplacement = curl.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+            let csharpReplacement = csharp.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+            let javaReplacement = java.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+            let javascriptReplacement = javascript.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+            let objcReplacement = objc.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+            let phpReplacement = php.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+            let pythonReplacement = python.replace("developer-portal-api-stage.otiselevator.com", "sandbox.ems.otis.com");
+            pythonReplacement = pythonReplacement.replace("developer-portal-api-stage.otiselevator.com", "sandbox.ems.otis.com");
+            pythonReplacement = pythonReplacement.replace("/api/bms/sandbox", "/api/bms");
+            pythonReplacement = pythonReplacement.replace("/api/bms/sandbox", "/api/bms");
+            let rubyReplacement = ruby.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/sandbox", sandboxBackend);
+
+            document.getElementsByClassName("plain")[0].innerHTML = curlReplacement;
+            document.getElementsByClassName("csharp")[0].innerHTML = csharpReplacement;
+            document.getElementsByClassName("java")[0].innerHTML = javaReplacement;
+            document.getElementsByClassName("xml")[1].innerHTML = javascriptReplacement;
+            document.getElementsByClassName("objc")[0].innerHTML = objcReplacement;
+            document.getElementsByClassName("php")[0].innerHTML= phpReplacement;
+            document.getElementsByClassName("python")[1].innerHTML = pythonReplacement;
+            document.getElementsByClassName("ruby")[0].innerHTML = rubyReplacement;
+        }
+        else if (path.includes("/docs/services/bms-production/operations/")) {
+            let curl = document.getElementsByClassName("plain")[0].innerHTML
+            let csharp = document.getElementsByClassName("csharp")[0].innerHTML
+            let java = document.getElementsByClassName("java")[0].innerHTML
+            let javascript = document.getElementsByClassName("xml")[1].innerHTML
+            let objc = document.getElementsByClassName("objc")[0].innerHTML
+            let php = document.getElementsByClassName("php")[0].innerHTML
+            let python = document.getElementsByClassName("python")[1].innerHTML
+            let ruby = document.getElementsByClassName("ruby")[0].innerHTML
+
+            let prodBackend = "https://americas.ems.otis.com/api/bms"
+
+            let curlReplacement = curl.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+            let csharpReplacement = csharp.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+            let javaReplacement = java.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+            let javascriptReplacement = javascript.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+            let objcReplacement = objc.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+            let phpReplacement = php.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+            let pythonReplacement = python.replace("developer-portal-api-stage.otiselevator.com", "americas.ems.otis.com");
+            pythonReplacement = pythonReplacement.replace("developer-portal-api-stage.otiselevator.com", "americas.ems.otis.com");
+            pythonReplacement = pythonReplacement.replace("/api/bms/production", "/api/bms");
+            pythonReplacement = pythonReplacement.replace("/api/bms/production", "/api/bms");
+            let rubyReplacement = ruby.replace("https://developer-portal-api-stage.otiselevator.com/api/bms/production", prodBackend);
+
+            document.getElementsByClassName("plain")[0].innerHTML = curlReplacement;
+            document.getElementsByClassName("csharp")[0].innerHTML = csharpReplacement;
+            document.getElementsByClassName("java")[0].innerHTML = javaReplacement;
+            document.getElementsByClassName("xml")[1].innerHTML = javascriptReplacement;
+            document.getElementsByClassName("objc")[0].innerHTML = objcReplacement;
+            document.getElementsByClassName("php")[0].innerHTML= phpReplacement;
+            document.getElementsByClassName("python")[1].innerHTML = pythonReplacement;
+            document.getElementsByClassName("ruby")[0].innerHTML = rubyReplacement;
+        }
+    }, "1000")
+}
+
+function updateProfileSubscriptionName() {
+    let path = window.location.pathname.toLowerCase()
+    if (path.includes("/developer")) {
+        setTimeout(() => {
+            let subscriptionMessage = document.getElementById("dvSubscriptionMsg");
+            if (subscriptionMessage) {
+                let subscriptionMessageReplacement = subscriptionMessage.innerHTML;
+                subscriptionMessageReplacement = subscriptionMessageReplacement.replace("Z Building Management", "Building Management");
+                subscriptionMessage.innerHTML = subscriptionMessageReplacement;
+            }
+
+            $('a[href*="/Products/bms-sandbox"]').html("Building Management (Sandbox)");
+            $('a[href*="/Products/bms-production"]').html("Building Management (Production)");
+            let subscriptionNames = document.getElementsByClassName("col-lg-6");
+            for (let subscriptionName of subscriptionNames) {
+                if (subscriptionName.innerHTML.includes("Z Building Management")) {
+                    subscriptionName.innerHTML = subscriptionName.innerHTML.substring(17);
+                }
+            }
+        }, "1000")
+    }
+}
+
+function isNullOrWhitespace(input) {
+    return !input || !input.trim();
+}
+</script>
+
+                </header>
+            </div>
+        </div>
+
+        <div class="zone-navigation layout-row">
+            <nav id="navigation" role="navigation">
+                <div class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+
+<div class="container-fluid" id="headerImageContainer">
+    <div class="row">
+        <div class="col-xs-12">
+           <a href="/"> 
+           <img id="headerImg" class="visible-md-block visible-lg-block center-block img-responsive pull-left"
+            src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Images/OTI_API_DevPortal_Logo.svg">
+            </a>
+        </div> 
+    </div> 
+</div>
+
+
+<style>
+    #headerImageContainer {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    background-color: #041E42;
+    width:200px;
+    height:40px;
+}
+
+ #headerImageContainer .container-fluid{
+    margin-right: auto;
+    margin-left: auto;
+    /*padding: 0 !important;*/
+}
+
+</style>
+
+
+
+
+                    </div>
+                    <div class="collapse navbar-collapse">
+                        
+<div class="container-fluid" id="headerImageContainer1">
+    <div class="row">
+        <div class="col-xs-12">
+          <a href="/"> 
+          <img id="headerImg" class="visible-md-block visible-lg-block center-block img-responsive pull-left"
+            src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Images/OTI_API_DevPortal_Logo.svg">
+          </a>
+           
+        </div> 
+    </div> 
+</div>
+
+
+
+
+
+
+
+
+<ul class="nav navbar-nav" role="menu" aria-label="Main">
+    
+<li><span class="raw"><div style="min-width: 180px;">
+             <!--<img id="NavHeaderImg" class="visible-md-block visible-lg-block center-block img-responsive pull-left"
+            src="">-->
+             <span id="LogoSpan"></span>
+</div>
+</span>
+</li>
+<li><a href="/">HOME</a>
+</li>
+<li><a href="/products">PRODUCTS</a>
+</li>
+<li><a href="/Started">GET STARTED</a>
+</li>
+</ul>
+
+                        
+<ul class="nav navbar-nav pull-right" role="navigation" aria-label="Account menu">
+        <li class="dropdown" role="presentation">
+            <a href="#" id="account-menu" class="dropdown-toggle" data-toggle="dropdown" role="combobox" aria-label="Otishackathon team10">
+                Otishackathon team10
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="account-menu">
+                                    <li role="presentation"><a href="/developer" role="menuitem">Profile</a></li>
+                <li role="presentation"><a href="/signout" role="menuitem">Sign Out</a></li>
+            </ul>
+        </li>
+</ul>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+    
+    <div class="layout-row layout-row-content">
+        <div class="layout">
+            <div class="zone-content col-md-12 layout-column">
+                <main role="main">
+                                        
+
+<div class="apiphany">
+    <div class="ap-analytics-locals">
+        <div class="ap-analytics-summary-locals">
+
+            <ul class="nav nav-tabs">
+    <li class="active">
+        <a id="atGlanceTab" href="/Developer/Analytics">At a glance</a>
+    </li>
+    <li class="">
+        <a id="usageTab" href="/Developer/Analytics/Usage">Usage</a>
+    </li>
+    <li class="">
+        <a id="healthTab" href="/Developer/Analytics/Health">Health</a>
+    </li>
+    <li class="">
+        <a id="activityTab" href="/Developer/Analytics/Activity">Activity</a>
+    </li>
+</ul>
+
+            <div class="ap-local-usage-health-section row">
+                <div class="col-md-12">
+                    <div class="pull-right ap-inline-menu ap-local-time-settings-presets" data-bind="template: { name: 'menuTemplate', data: timeMenu }"></div>
+                </div>
+                <div class="col-md-12">
+                    <h2>Usage / Health</h2>
+                </div>
+                <div class="col-md-12 ap-chart-container ap-curtain-container ">
+                    <div class="ap-chart-placeholder" data-bind="chart: graph.chart, visible: graph.hasData()" id="atGlanceChart"></div>
+                    <div class="ap-curtain" data-bind="instance: { of: 'curtainTemplate', data: graphCurtain }, visible: graphCurtain.isShown()">
+                        <!-- ko where: 'content' -->
+                        Loading...<!-- /ko -->
+                    </div>
+                    <div class="ap-empty" data-bind="instance: { of: 'emptyTemplate' }, visible: !graph.hasData()">
+                        <!-- ko where: 'content' -->
+                        <div class="ap-quiet">There is no data for the selected period and scope</div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="ap-local-table-section row" id="topProducts">
+                <div class="col-md-12">
+                    <h2>Top products</h2>
+                </div>
+                <div class="col-md-12 ap-local-table-container ap-curtain-container">
+                    <table class="table" data-bind="template: { data: productsTable, if: productsTable.hasData()}, visible: productsTable.hasData()">
+                        <thead class="ap-table-header">
+                            <tr class="ap-is-snapped-to-bottom">
+                                <th class="ap-table-cell ap-is-text ap-is-first">Products</th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountSuccess', text: 'Successful calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountUnauth', text: 'Blocked calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountError', text: 'Failed calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountOther', text: 'Other calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCount', text: 'Total calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'ApiResponseTimeAvg', text: 'Response time, Avg', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number ap-is-last" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'Bandwidth', text: 'Bandwidth', table: $data} }"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="ap-table-body" data-bind="foreach: data">
+                            <tr class="ap-table-row" data-bind="css: { 'ap-is-first': !$index() }">
+                                <td class="ap-table-cell ap-is-text ap-is-first">
+                                    <div><a class="ap-action" data-bind="attr: { href: Product.Link }, text: Product.Name"></a></div>
+                                    <div class="ap-truncated-container">
+                                        <div class="ap-truncated-content" data-bind="attr: { title: 'APIs: ' + apiphany.Core.joinNonEmpty(Apis, ', ', 'Name') }">
+                                            <!-- ko foreach: Apis -->
+                                            <a class="ap-action ap-quietest" data-bind="text: Name, attr: { href: Link }"></a><!-- ko if: $index() < $parent.Apis.length - 1 --><span class="ap-quietest">, </span><!-- /ko -->
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountSuccessFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountUnauthFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountErrorFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountOtherFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: ApiResponseTimeAvgFormatted"></td>
+                                <td class="ap-table-cell ap-is-number ap-is-last" data-bind="text: BandwidthFormatted"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="ap-curtain" data-bind="instance: { of: 'curtainTemplate', data: productsCurtain }, visible: productsCurtain.isShown()">
+                        <!-- ko where: 'content' -->
+                        Loading...<!-- /ko -->
+                    </div>
+                    <div class="ap-empty" data-bind="instance: { of: 'emptyTemplate' }, visible: !productsTable.hasData()">
+                        <!-- ko where: 'content' -->
+                        <div class="ap-quiet">There is no data for the selected period and scope</div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+
+                <div class="ap-local-table-section row" id="topSubscriptions">
+                    <div class="col-md-12">
+                        <h2>Top subscriptions</h2>
+                    </div>
+                    <div class="col-md-12 ap-local-table-container ap-curtain-container">
+                        <table class="table" data-bind="template: { data: subscriptionsTable, if: subscriptionsTable.hasData()}, visible: subscriptionsTable.hasData()">
+                            <thead class="ap-table-header">
+                            <tr class="ap-is-snapped-to-bottom">
+                                <th class="ap-table-cell ap-is-text ap-is-first">Top subscriptions</th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountSuccess', text: 'Successful calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountUnauth', text: 'Blocked calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountError', text: 'Failed calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountOther', text: 'Other calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCount', text: 'Total calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'ApiResponseTimeAvg', text: 'Response time, Avg', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number ap-is-last" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'Bandwidth', text: 'Bandwidth', table: $data} }"></th>
+                            </tr>
+                            </thead>
+                            <tbody class="ap-table-body" data-bind="foreach: data">
+                            <tr class="ap-table-row" data-bind="css: { 'ap-is-first': !$index() }">
+                                <td class="ap-table-cell ap-is-text ap-is-first">
+                                    <div class="ap-truncated-container">
+                                        <div class="ap-truncated-content" data-bind="attr: { title: 'Product: ' + Product.Name }">
+                                            <a class="ap-action ap-quietest" data-bind="text: Product.Name, attr: { href: Product.Link }"></a>
+                                        </div>
+                                    </div>
+                                    <div><a class="ap-action" data-bind="text: Subscription.Name, attr: { href: Developer.Link }"></a>
+                                    </div>
+                                </td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountSuccessFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountUnauthFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountErrorFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountOtherFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: ApiResponseTimeAvgFormatted"></td>
+                                <td class="ap-table-cell ap-is-number ap-is-last" data-bind="text: BandwidthFormatted"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="ap-curtain" data-bind="instance: { of: 'curtainTemplate', data: subscriptionsCurtain }, visible: subscriptionsCurtain.isShown()">
+                            <!-- ko where: 'content' -->
+                            Loading...<!-- /ko -->
+                        </div>
+                        <div class="ap-empty" data-bind="instance: { of: 'emptyTemplate' }, visible: !subscriptionsTable.hasData()">
+                            <!-- ko where: 'content' -->
+                            <div class="ap-quiet">There is no data for the selected period and scope</div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            
+            <div class="ap-local-table-section row" id="topApis">
+                <div class="col-md-12">
+                    <h2>Top APIs</h2>
+                </div>
+                <div class="col-md-12 ap-local-table-container ap-curtain-container">
+                    <table class="table" data-bind="template: { data: apisTable, if: apisTable.hasData()}, visible: apisTable.hasData()">
+                        <thead class="ap-table-header">
+                            <tr>
+                                <th class="ap-table-cell ap-is-text ap-is-first">API</th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountSuccess', text: 'Successful calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountUnauth', text: 'Blocked calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountError', text: 'Failed calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountOther', text: 'Other calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCount', text: 'Total calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'ApiResponseTimeAvg', text: 'Response time, Avg', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number ap-is-last" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'Bandwidth', text: 'Bandwidth', table: $data} }"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="ap-table-body" data-bind="foreach: data">
+                            <tr class="ap-table-row" data-bind="css: { 'ap-is-first': !$index() }">
+                                <td class="ap-table-cell ap-is-text ap-is-first">
+                                    <div class="ap-truncated-container">
+                                        <div class="ap-truncated-content" data-bind="attr: { title: 'Products: ' + apiphany.Core.joinNonEmpty(Products, ', ', 'Name') }">
+                                            <!-- ko foreach: Products -->
+                                            <a class="ap-action ap-quietest" data-bind="text: Name, attr: { href: Link }"></a><!-- ko if: $index() < $parent.Products.length - 1 --><span class="ap-quietest">, </span><!-- /ko -->
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+                                    <div><a class="ap-action" data-bind="attr: { href: Api.Link },  text: Api.Name"></a></div>
+                                </td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountSuccessFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountUnauthFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountErrorFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountOtherFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountFormatted"></td>
+                                <td class="ap-table-cell ap-is-number ap-is-last" data-bind="text: ApiResponseTimeAvgFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: BandwidthFormatted"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="ap-curtain" data-bind="instance: { of: 'curtainTemplate', data: apisCurtain }, visible: apisCurtain.isShown()">
+                        <!-- ko where: 'content' -->
+                        Loading...<!-- /ko -->
+                    </div>
+                    <div class="ap-empty" data-bind="instance: { of: 'emptyTemplate' }, visible: !apisTable.hasData()">
+                        <!-- ko where: 'content' -->
+                        <div class="ap-quiet">There is no data for the selected period and scope</div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="ap-local-table-section row" id="topOperations">
+                <div class="col-md-12">
+                    <h2>Top operations</h2>
+                </div>
+                <div class="col-md-12 ap-local-table-container ap-curtain-container">
+                    <table class="table" data-bind="template: { data: operationsTable, if: operationsTable.hasData()}, visible: operationsTable.hasData()">
+                        <thead class="ap-table-header">
+                            <tr>
+                                <th class="ap-table-cell ap-is-text ap-is-first">Operation</th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountSuccess', text: 'Successful calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountUnauth', text: 'Blocked calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountError', text: 'Failed calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCountOther', text: 'Other calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'CallCount', text: 'Total calls', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'ApiResponseTimeAvg', text: 'Response time, Avg', table: $data} }"></th>
+                                <th class="ap-table-cell ap-is-number ap-is-last" data-bind="template: { name: 'localTableHeaderContentTemplate', data: { fieldName: 'Bandwidth', text: 'Bandwidth', table: $data} }"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="ap-table-body" data-bind="foreach: data">
+                            <tr class="ap-table-row" data-bind="css: { 'ap-is-first': !$index() }">
+                                <td class="ap-table-cell ap-is-text ap-is-first">
+                                    <div class="ap-truncated-container">
+                                        <div class="ap-truncated-content">
+                                            <a class="ap-action ap-quietest" data-bind="text: Api.Name, attr: { title: 'API: ' + Api.Name, href: Api.Link }"></a>
+                                        </div>
+                                    </div>
+                                    <div><a class="ap-action" data-bind="attr: { href: Operation.Link }, text: Operation.Name"></a></div>
+                                </td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountSuccessFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountUnauthFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountErrorFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountOtherFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: CallCountFormatted"></td>
+                                <td class="ap-table-cell ap-is-number" data-bind="text: ApiResponseTimeAvgFormatted"></td>
+                                <td class="ap-table-cell ap-is-number ap-is-last" data-bind="text: BandwidthFormatted"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="ap-curtain" data-bind="instance: { of: 'curtainTemplate', data: operationsCurtain }, visible: operationsCurtain.isShown()">
+                        <!-- ko where: 'content' -->
+                        Loading...<!-- /ko -->
+                    </div>
+                    <div class="ap-empty" data-bind="instance: { of: 'emptyTemplate' }, visible: !operationsTable.hasData()">
+                        <!-- ko where: 'content' -->
+                        <div class="ap-quiet">There is no data for the selected period and scope</div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        var globals = apiphany.globals;
+        var developerId = '0';
+
+        $.extend(apiphany.Resources.LocalizedStrings, {DatepickerButtonLabelLast30Days:'Last 30 Days',DatepickerButtonLabelLast7Days:'Last 7 Days',DatepickerButtonLabelLast90Days:'Last 90 Days',DatepickerButtonLabelToday:'Today',DatepickerButtonLabelYesterday:'Yesterday',NavigationTabLabelActivity:'Activity',NavigationTabLabelAtGlance:'At a glance',NavigationTabLabelHealth:'Health',NavigationTabLabelUsage:'Usage',ScopepickerOptionAllApis:'All APIs...',ScopepickerOptionAllOperations:'All operations...',ScopepickerOptionAllProducts:'All products...',ScopepickerOptionAllRegions:'All regions...',ScopepickerOptionSelectApi:'Select API...',ScopepickerOptionSelectOperation:'Select operation...',ScopepickerOptionSelectProduct:'Select product...',ScopepickerOptionSelectRegion:'Select region...',});;
+
+        apiphany.Analytics.Summary.Developer.bootstrap(globals, developerId, true);
+    });
+</script>
+
+<script type="text/html" id="localTableHeaderContentTemplate">
+    <div class="ap-table-cell-container">
+        <a class="ap-table-cell-sort-action" href="#" data-bind="css: { 'ap-is-picked': table.isOrderedBy(fieldName) }, click: table.trySort.bind(table, fieldName, -1, false), text: text"></a>
+        <span class="ap-table-cell-sort-indicator ap-is-descending" data-bind="visible: table.isOrderedBy(fieldName)"></span>
+    </div>
+</script>                                    </main>
+            </div>
+
+        </div>
+    </div>
+
+
+
+        <div class="layout-row">
+            <div class="zone-footer layout">
+                <footer role="contentinfo">
+                        <div class="row">
+                                                                                                            </div>
+                    
+
+<link rel="stylesheet" href="https://apimgmtstmtpahbwyjbudjvv.blob.core.windows.net/content/MediaLibrary/CSS/ContacUs.css">
+<div id="Email_DivContainer" class="col-xs-12 otisEmailCont">
+    <span class="emailIcon">If you have any questions drop an email</span>
+    <img src="https://apimgmtstmtpahbwyjbudjvv.blob.core.windows.net/content/MediaLibrary/Images/Mail_Icon.svg" style="height: 35px;width: 35px;">
+    <span class="emailID"><a class="emailhover" href="mailto:developers@otis.com" target="_top">developers@otis.com</a></span>
+</div>
+
+<link rel="stylesheet" href="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/CSS/Footer.css">
+<footer class="dvMainFooter">
+    <div class="page-footer border-0 divFooter">
+        <div class="row m-0 p-3">
+          <div id="dvOtisLogo" class="col-sm-5">
+                <a href="https://www.otis.com/en/us/" target="_blank">
+                <img id="imgOtisLogo"  src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Images/OTIS_2017_BLACK.svg">
+           </a> </div>
+           <div id="dvOtisContent" class="col-sm-7 Contact">
+                 <div class="pull-right">
+                <p class="footer-content">© 2020 Otis Elevator Company. All rights reserved</p>
+                <span class="pr-2 pl-2"><a href="https://www.otis.com/en/us/about/" target="_blank">About OTIS </a></span>
+                <span class="pr-2 pl-2"><a href="https://www.otis.com/en/us/terms-use/" target="_blank">Terms of Use</a></span>
+ 		<span class="pl-2"><a href="https://www.otis.com/en/us/privacy-policy/" target="_blank">Privacy Policy</a></span>
+                <span class="pl-2"><a href="https://developers.staging.otiselevator.com/LicensePage" target="_blank">License</a></span>
+            </div>
+          </div>
+        </div>
+        <div class="row m-0 pb-3 divGoToTop">
+            <div class="col text-center pt-2" id="footerDivGotoTOP">
+                <span><a href="#"><img src="https://apimgmtstqklciqhggfysmuq.blob.core.windows.net/content/MediaLibrary/Images/GoToTop_Arrow.png" id="imgGoToTop"></a></span>
+            </div>
+        </div>
+    </div>
+    
+</footer>
+                </footer>
+            </div>
+        </div>
+</div>
+
+    <script src="/Modules/Portals.Web.Core/scripts/bootstrap/bootstrap.js" type="text/javascript"></script>
+
+    
+
+<script type="text/html" id="scopePickerTemplate">
+    <div class="row">
+        <div class="col-md-6">
+            <label data-bind="text: local.scopePickerHelper.policyPickerProductLabelTextShortcut('products', 'product', selectedProduct())"></label>
+            <select class="col-md-6 form-control" data-bind="options: products, optionsText: 'name', value: selectedProduct, optionsCaption: local.scopePickerHelper.policyPickerProductCaptionTextShortcut(selectedProduct())" id="scopePickerProduct"></select>
+        </div>
+        <div class="col-md-6">
+            <label data-bind="text: local.scopePickerHelper.policyPickerApiLabelTextShortcut('APIs', 'API', selectedApi(), selectedProduct())"></label>
+            <select class="col-md-6 form-control" data-bind="options: apis, optionsText: 'name', value: selectedApi, optionsCaption: local.scopePickerHelper.policyPickerApiCaptionTextShortcut(selectedApi())" id="scopePickerApi"></select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <label data-bind="text: local.scopePickerHelper.policyPickerOperationLabelTextShortcut('operations', 'operation', selectedOperation(), selectedApi())"></label>
+            <select class="col-md-12 form-control" data-bind="options: operations, optionsText: $data.getOperationName.bind($data), value: selectedOperation, optionsCaption: local.scopePickerHelper.policyPickerOperationCaptionTextShortcut(selectedOperation())" id="scopePickerOperation"></select>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="emptyTemplate">
+    <table class="ap-empty-frame">
+        <tbody>
+            <tr>
+                <td class="ap-empty-content-container" data-bind="here: 'content'"></td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+<script type="text/html" id="curtainTemplate">
+    <div class="ap-curtain-background"></div>
+    <table class="ap-curtain-foreground">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="ap-curtain-content-container" data-bind="here: 'content'"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+<script type="text/html" id="menuTemplate">
+    <div class="btn-group" data-bind="foreach: items">
+        <button class="btn btn-default" data-bind="
+            css: { 'active' : isPicked(), 'ap-is-disabled':  !isEnabled() },
+            enable: isEnabled(),
+            text: text,
+            event: { mouseover: activate, mouseout: deactivate },
+            click: pick,
+            attr: { title: tooltipOpt }"></button>
+    </div>
+</script>
+<script type="text/html" id="emptyTemplate">
+    <table class="ap-empty-frame">
+        <tbody>
+            <tr>
+                <td class="ap-empty-content-container" data-bind="here: 'content'"></td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+<script type="text/html" id="curtainTemplate">
+    <div class="ap-curtain-background"></div>
+    <table class="ap-curtain-foreground">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="ap-curtain-content-container" data-bind="here: 'content'"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+<script type="text/html" id="validationSummaryTemplate">
+    <!-- ko if: hasIssues() -->
+    <div class="alert alert-danger" role="alert">
+        <ul data-bind="foreach: issues">
+            <!-- ko template: { name: template, data: templateData } --><!-- /ko -->
+        </ul>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: hasWarnings() -->
+    <div class="alert alert-warning" role="alert">
+        <ul data-bind="foreach: warnings">
+            <!-- ko template: { name: template, data: templateData } --><!-- /ko -->
+        </ul>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: hasNotifications() -->
+    <div class="alert alert-info" role="alert">
+        <ul data-bind="foreach: notifications">
+            <!-- ko template: { name: template, data: templateData } --><!-- /ko -->
+        </ul>
+    </div>
+    <!-- /ko -->
+</script>
+
+<script type="text/html" id="simpleValidationSummaryItemTemplate">
+    <li data-bind="html: $data"></li>
+</script>
+<script type="text/html" id="dateRangePickerBundleTemplate">
+    <div class="row">
+        <div class="col-md-6">
+            <input class="ap-textbox form-control" type="text" data-bind="value: value, valueUpdate: 'afterkeydown', event: { mousedown: show, focus: show, blur: considerLeaving }" id="dateRangePickerRange" />
+            <div class="ap-date-range-picker-placeholder">
+                <div class="ap-date-range-picker-container" data-bind="template: { name: 'dateRangePickerTemplate', data: responder, if: visible() }, event: { mousedown: preventHiding }"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="dateRangePickerTemplate">
+    <div class="ap-date-range-picker">
+        <div class="ap-date-range-pickers">
+            <div class="ap-date-range-pickers-all">
+                <div class="ap-date-range-picker-one-date-picker-container" data-bind="template: { name: 'datePickerTemplate', data: oneDatePicker }"></div>
+                <div class="ap-date-range-picker-another-date-picker-container" data-bind="template: { name: 'datePickerTemplate', data: anotherDatePicker }"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="datePickerTemplate">
+    <div class="ap-date-picker">
+        <div data-bind="template: { name: 'monthPickerTemplate', data: monthPicker }"></div>
+        <div data-bind="template: { name: 'calendarTemplate', data: calendar }"></div>
+    </div>
+</script>
+
+<script type="text/html" id="monthPickerTemplate">
+    <div class="ap-month-picker">
+        <div class="ap-month-picker-previous-action-container" data-bind="click: previousMonth"><a class="ap-month-picker-previous-action"></a></div>
+        <div class="ap-month-picker-current">
+            <div class="ap-month-picker-current-month-container">
+                <span class="ap-month-picker-current-month-text" data-bind="text: month"></span>,
+            </div>
+            <div class="ap-month-picker-current-year-container">
+                <span class="ap-month-picker-current-year-text" data-bind="text: year"></span>
+            </div>
+        </div>
+        <div class="ap-month-picker-next-action-container" data-bind="click: nextMonth"><a class="ap-month-picker-next-action"></a></div>
+    </div>
+</script>
+
+<script type="text/html" id="calendarTemplate">
+    <table class="ap-calendar" border="0" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr data-bind="foreach: dayOfWeekNames">
+                <th data-bind="text: $data"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: weeks">
+            <tr data-bind="foreach: $data">
+                <td class="ap-calendar-day" data-bind="css: $parents[1].states.areEnabled($data, {
+                    'weekend day': 'ap-is-weekend',
+                    'from another month': 'ap-is-another-month-day',
+                    'active': 'ap-is-active',
+                    'picked': 'ap-is-picked',
+                    'disabled': 'ap-is-disabled',
+                    'selected': 'ap-is-selected'
+                })">
+                    <a class="ap-calendar-day-action" href="#" data-bind="
+                    text: dayOfMonth,
+                    event: {
+                        mouseover: function() { return $parents[1].states.tryEnable(this, 'active'); },
+                        mouseout: function() { return $parents[1].states.tryDisable(this, 'active'); }
+                    },
+                    click: function() { return $parents[1].states.tryEnable(this, 'picked'); }"></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+
+
+<script type="text/html" id="pagerTemplate">
+    <!-- ko call: { addPageSizes: [[10,50,100]] } --><!-- /ko -->
+    <!-- ko if: pageCount() > 1 -->
+    <div class="clearfix">
+        <ul class="pagination pull-left" role="navigation">
+            <!-- ko if: page() > 1 -->
+            <li data-bind="visible: page() > 1">
+                <a href="#" rel="prev" data-bind="click: setPage.bind($data, 0)">&lt;&lt;</a>
+            </li>
+            <!-- /ko -->
+            <!-- ko if: page() > 0 -->
+            <li data-bind="visible: page() > 0">
+                <a href="#" rel="prev" data-bind="click: setPage.bind($data, page() - 1)">&lt;</a>
+            </li>
+            <!-- /ko -->
+            <!-- ko foreach: pages -->
+            <li data-bind="css: { active: $data == $parent.page() }">
+                <a href="#" data-bind="text: $data+1, click: $parent.setPage, attr: { 'aria-selected': $data == $parent.page() }"></a>
+            </li>
+            <!-- /ko -->
+            <!-- ko if: page() < pageCount()-1 -->
+            <li data-bind="visible: page() < pageCount() - 1">
+                <a href="#" rel="next" data-bind="click: setPage.bind($data, page() + 1)" id="usersNextPage">&gt;</a>
+            </li>
+            <!-- /ko -->
+            <!-- ko if: page() < pageCount()-2 -->
+            <li data-bind="visible: page() < pageCount() - 2">
+                <a href="#" rel="next" data-bind="click: setPage.bind($data, pageCount()-1)">&gt;&gt;</a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!--ko if: pageSizes().length > 1 -->
+        <ul class="pagination pull-right" role="navigation">
+            <!-- ko foreach: { data: pageSizes, as: 'pageSizeOption' } -->
+            <li data-bind="visible: $parent.isPageSizeOptionAvailable(pageSizeOption), css: { active: $parent.isPageSizeOptionSelected(pageSizeOption) }">
+                <a href="#" data-bind="click: $parent.setPageSize, text: pageSizeOption, attr: { 'aria-selected': $parent.isPageSizeOptionSelected(pageSizeOption) }"></a>
+            </li>
+            <!-- /ko -->
+            <li data-bind="visible: isShowAllOptionAvailable(), css: { active: isShowAllOptionSelected() }">
+                <a href="#" data-bind="click: setPageSize.bind($data, 0)">All</a>
+            </li>
+        </ul>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</script>
+
+</body>
+</html>
