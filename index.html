@@ -15,6 +15,7 @@
       </thead>
       <tbody id="maintenance-body"></tbody>
     </table>
+    <input type="file" id="file-input" accept=".xlsx">
     <script>
       // Read the data from the Excel file
       const readExcelData = () => {
@@ -27,14 +28,11 @@
             const worksheet = workbook.Sheets[firstSheetName];
             resolve(XLSX.utils.sheet_to_json(worksheet, { header: 1 }));
           };
-          reader.readAsBinaryString(input.files[0]);
+          reader.readAsBinaryString(document.getElementById("file-input").files[0]);
         });
       };
 
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".xlsx";
-      input.addEventListener("change", async () => {
+      document.getElementById("file-input").addEventListener("change", async () => {
         const data = await readExcelData();
         data.shift(); // Remove the first row with the headers
         data.forEach(row => {
@@ -44,7 +42,6 @@
           fetchData(customerId, contractNo, countryCode);
         });
       });
-      document.body.appendChild(input);
 
       // Fetch the data from the API
       const fetchData = (customerId, contractNo, countryCode) => {
@@ -59,4 +56,12 @@
               row.innerHTML = `
                 <td>${maintenanceInfo.elevator_id}</td>
                 <td>${maintenanceInfo.maintenance_type}</td>
-                <td>${maintenanceInfo.main}
+                <td>${maintenanceInfo.maintenance_date}</td>
+              `;
+              maintenanceBody.appendChild(row);
+            });
+          });
+      };
+    </script>
+  </body>
+</
