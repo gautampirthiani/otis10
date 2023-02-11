@@ -3,65 +3,15 @@
   <head>
     <title>Elevator Maintenance Information</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.core.min.js"></script>
+    <script src="https://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
   </head>
   <body>
-    <table id="maintenance-table">
-      <thead>
-        <tr>
-          <th>Elevator ID</th>
-          <th>Maintenance Type</th>
-          <th>Maintenance Date</th>
-        </tr>
-      </thead>
-      <tbody id="maintenance-body"></tbody>
-    </table>
-    <input type="file" id="file-input" accept=".xlsx">
-    <script>
-      // Read the data from the Excel file
-      const readExcelData = () => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            const data = event.target.result;
-            const workbook = XLSX.read(data, { type: "binary" });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            resolve(XLSX.utils.sheet_to_json(worksheet, { header: 1 }));
-          };
-          reader.readAsBinaryString(document.getElementById("file-input").files[0]);
-        });
-      };
-
-      document.getElementById("file-input").addEventListener("change", async () => {
-        const data = await readExcelData();
-        data.shift(); // Remove the first row with the headers
-        data.forEach(row => {
-          const customerId = row[0];
-          const contractNo = row[1];
-          const countryCode = row[2];
-          fetchData(customerId, contractNo, countryCode);
-        });
-      });
-
-      // Fetch the data from the API
-      const fetchData = (customerId, contractNo, countryCode) => {
-        fetch(
-          `https://developer-portal-api-stage.otiselevator.com/elevatormaintenance/api/latestmaintenanceinfo?country_code=${countryCode}&customer_id=${customerId}&contract_no=${contractNo}`
-        )
-          .then(response => response.json())
-          .then(data => {
-            const maintenanceBody = document.getElementById("maintenance-body");
-            data.forEach(maintenanceInfo => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${maintenanceInfo.elevator_id}</td>
-                <td>${maintenanceInfo.maintenance_type}</td>
-                <td>${maintenanceInfo.maintenance_date}</td>
-              `;
-              maintenanceBody.appendChild(row);
-            });
-          });
-      };
-    </script>
+    <div class="container">
+      <input type="file" id="file-input" accept=".xlsx">
+      <table class="table table-striped" id="excel-table">
+          <!-- table rows and columns will be added here dynamically -->
+      </table>
+  </div>
   </body>
-</
+</html>
+<script src="script.js"></script>
