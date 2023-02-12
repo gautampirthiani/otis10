@@ -17,6 +17,21 @@
       .container {
         padding: 20px;
       }
+      
+      .title-text {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-weight: bold;
+        color: white;
+      }
+      
+      .subtitle-text {
+        position: absolute;
+        top: 40px;
+        left: 20px;
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -27,6 +42,9 @@
         <p class="lead">Elevator Maintenance Information</p>
       </div>
     </div>
+    <div class="title-text">OTIS</div>
+    <div class="subtitle-text">Team10-Hackathon</div>
+    
     
     <!-- Adding a form for inputs -->
     <div class="container">
@@ -49,6 +67,8 @@
         </div>
       </form>
       <div id="api-response"></div>
+      
+      
     </div>
       <!-- Adding a table for excel data -->
       <div class="container">
@@ -65,46 +85,3 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-    <title>Elevator Maintenance Information</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.core.min.js"></script>
-    <script src="https://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
-  </head>
-  <body>
-    <input type="text" id="country_code-input">
-<input type="text" id="unit_number-input">
-<input type="text" id="customer_id-input">
-<input type="text" id="contract_no-input">
-<div id="api-response"></div>
-
-    <div class="container">
-      <input type="file" id="file-input" accept=".xlsx">
-      <table class="table table-striped" id="excel-table">
-          table rows and columns will be added here dynamically
-      </table> -->
- 
