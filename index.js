@@ -1,50 +1,41 @@
-const customerId = "your_customer_id";
-const contractNo = "your_contract_no";
-const countryCode = "your_country_code";
+function fetchAPI() {
+  // Read data from an input Excel file
+  var file = document.getElementById("fileInput").files[0];
+  var reader = new FileReader();
+  reader.readAsArrayBuffer(file);
 
-// Read the data from the Excel file
-const readExcelData = () => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const data = event.target.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-      resolve(XLSX.utils.sheet_to_json(worksheet, { header: 1 }));
+  reader.onload = function(e) {
+    var data = new Uint8Array(reader.result);
+    var wb = XLSX.read(data, {type: 'array'});
+    var firstSheetName = wb.SheetNames[0];
+    var worksheet = wb.Sheets[firstSheetName];
+    var customerIds = XLSX.utils.sheet_to_json(worksheet, { header: 1, column: 3 });
+    var contractNos = XLSX.utils.sheet_to_json(worksheet, { header: 1, column: 4 });
+    var countryCodes = XLSX.utils.sheet_to_json(worksheet, { header: 1, column: 1 });
+
+    // Add the subscription key to the API request header
+    var headers = {
+      "Ocp-Apim-Subscription-Key": "979befdb23674a0096119ce2b7b00467"
     };
-    reader.readAsBinaryString(input.files[0]);
-  });
-};
-
-const input = document.createElement("input");
-input.type = "file";
-input.accept = ".xlsx";
-input.addEventListener("change", async () => {
-  const data = await readExcelData();
-  customerId = data[1][0];
-  contractNo = data[1][1];
-  countryCode = data[1][2];
-  fetchData();
-});
-document.body.appendChild(input);
-
-// Fetch the data from the API
-const fetchData = () => {
-  fetch(
-    `https://developer-portal-api-stage.otiselevator.com/elevatormaintenance/api/latestmaintenanceinfo?country_code=${countryCode}&customer_id=${customerId}&contract_no=${contractNo}`
-  )
-    .then(response => response.json())
-    .then(data => {
-      const maintenanceBody = document.getElementById("maintenance-body");
-      data.forEach(maintenanceInfo => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${maintenanceInfo.elevator_id}</td>
-          <td>${maintenanceInfo.maintenance_type}</td>
-          <td>${maintenanceInfo.maintenance_date}</td>
-        `;
-        maintenanceBody.appendChild(row);
+  
+    // Loop through the arrays of customer IDs, contract numbers, and country codes
+    for (var i = 0; i < customerIds.length; i++) {
+      // Replace placeholders in the API endpoint with values from the arrays
+      var endpoint = "https://developer-portal-api-stage.otiselevator.com/elevatormaintenance/api/latestmaintenanceinfo?country_code=" + countryCodes[i] + "&customer_id=" + customerIds[i] + "&contract_no=" + contractNos[i];
+  
+      // Send a GET request to the API endpoint
+      var response = fetch(endpoint, {
+        headers: headers
       });
-    });
-};
+  
+      // Parse the API response as a JSON object
+      response.then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        // Do something with the data (e.g., log it, store it in a spreadsheet, etc.)
+        console.log(data);
+      });
+    }
+  }
+}
