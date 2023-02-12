@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Elevator Maintenance Information</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.core.min.js"></script>
+    <script src="https://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
+    
+    <!-- Adding styles for a modern data analysis look -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+      .jumbotron {
+        background-image: linear-gradient(to bottom, #003366, #333);
+        color: #fff;
+        border-radius: 0;
+      }
+      
+      .container {
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Adding a header -->
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container text-center">
+        <h1 class="display-4">OTIS Insights</h1>
+        <p class="lead">Elevator Maintenance Information</p>
+      </div>
+    </div>
+    
+    <!-- Adding a form for inputs -->
+    <div class="container">
+      <form>
+        <div class="form-group">
+          <label for="country_code-input">Country Code</label>
+          <input type="text" class="form-control" id="country_code-input">
+        </div>
+        <div class="form-group">
+          <label for="unit_number-input">Unit Number</label>
+          <input type="text" class="form-control" id="unit_number-input">
+        </div>
+        <div class="form-group">
+          <label for="customer_id-input">Customer ID</label>
+          <input type="text" class="form-control" id="customer_id-input">
+        </div>
+        <div class="form-group">
+          <label for="contract_no-input">Contract Number</label>
+          <input type="text" class="form-control" id="contract_no-input">
+        </div>
+      </form>
+      <div id="api-response"></div>
+    </div>
+      <!-- Adding a table for excel data -->
+      <div class="container">
+        <h2 class="text-center">Excel Data</h2>
+        <input type="file" id="file-input" accept=".xlsx">
+        <table class="table table-striped" id="excel-table">
+          <!-- table rows and columns will be added here dynamically -->
+        </table>
+      </div>
+    </body>
+  </html>
+  <script src="script.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Elevator Maintenance Information</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.core.min.js"></script>
+    <script src="https://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
+  </head>
+  <body>
+    <input type="text" id="country_code-input">
+<input type="text" id="unit_number-input">
+<input type="text" id="customer_id-input">
+<input type="text" id="contract_no-input">
+<div id="api-response"></div>
+
+    <div class="container">
+      <input type="file" id="file-input" accept=".xlsx">
+      <table class="table table-striped" id="excel-table">
+          table rows and columns will be added here dynamically
+      </table> -->
+ 
