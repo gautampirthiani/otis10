@@ -52,3 +52,4 @@ function fillAPIInputs() {
   inputBoxes.start_date.value = data[4];
   inputBoxes.end_date.value = data[5];
 }
+
