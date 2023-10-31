@@ -1,4 +1,5 @@
-OTIS Hackathon
+#OTIS Hackathon
+
 Otis Insights Feb 2023
 ◦ Led a team to develop a dynamic web application during a hackathon, utilizing JavaScript to provide real-time insights
 from the OTIS API for elevator maintenance prioritization.
